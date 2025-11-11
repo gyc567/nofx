@@ -147,12 +147,18 @@ $ ./test-api.sh http://localhost:8080
 - **Root Cause**: Replit deployment only has Go 1.24 available, but code requires Go 1.25.0
 - **Fix**: Deploy pre-built binary (no build step needed)
 
+### Third Failure
+- "Build command still running despite configuration changes"
+- **Root Cause**: Conflicting `railway.toml` file (for Railway platform, not Replit)
+- **Fix**: Removed railway.toml file + deployment cache clear
+
 **All Fixes Applied**:
 1. ✅ Backend uses Replit's PORT environment variable
 2. ✅ Health check responds in 2ms
 3. ✅ Server binds to 0.0.0.0 for external access
 4. ✅ Background initialization doesn't block startup
 5. ✅ **Using pre-built binary (no build step)**
+6. ✅ **Removed conflicting railway.toml file**
 
 ---
 
