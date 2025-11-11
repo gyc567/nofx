@@ -84,7 +84,8 @@ func main() {
 
 	// 检查是否至少有一个启用的trader
 	if enabledCount == 0 {
-		log.Fatalf("❌ 没有启用的trader，请在config.json中设置至少一个trader的enabled=true")
+		log.Println("⚠️  没有启用的trader，API服务器将仅运行监控模式（无实际交易）")
+		log.Println("💡 如需启用交易，请在config.json中设置至少一个trader的enabled=true")
 	}
 
 	fmt.Println()
