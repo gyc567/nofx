@@ -127,21 +127,40 @@ The SQLite database (`config.db`) is created automatically on first run. It stor
 
 ## Deployment to Replit
 
-The deployment configuration is already set up. To deploy:
+### Backend-Only Deployment (Current Configuration)
+
+The deployment is configured to deploy **backend only** (no frontend build):
 1. Click the **Publish** button in Replit
 2. Select **Reserved VM** deployment type
 3. Review the configuration (already configured)
 4. Click **Publish**
 
 The deployment will:
-1. Build the frontend (`npm run build`)
-2. Compile the backend (`go build`)
-3. Start the backend binary which serves both API and frontend
+1. Compile the backend (`go build -o nofx-backend main.go`)
+2. Start the backend binary (REST API server)
 
 ### Deployment Health Checks
 - **Endpoint**: `GET /`
 - **Response**: `{"status":"ok","service":"NOFX AI Trading System"}`
 - **Timeout**: Default Replit timeout settings
+
+### Testing the Deployed API
+
+After deployment, use the provided test script:
+```bash
+# 测试本地API
+./test-api.sh
+
+# 测试部署的API
+./test-api.sh https://your-deployment.repl.co
+```
+
+### API Documentation
+
+完整的API文档和前端对接指南：
+- **API Documentation**: See `API_DOCUMENTATION.md`
+- **Frontend Integration Guide**: See `FRONTEND_INTEGRATION.md`
+- **Test Script**: `test-api.sh`
 
 ## Security Notes
 - Admin mode is enabled for easy testing (bypasses authentication)
