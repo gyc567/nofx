@@ -68,12 +68,12 @@ Both services start automatically via the `fullstack-app` workflow.
 
 ### Production Deployment
 The deployment is configured for **Replit Reserved VM** with:
-- **Deployment Type**: Reserved VM (for full-stack applications)
-- **Build Command**: Installs dependencies, builds frontend, and compiles backend
-  ```bash
-  cd web && npm install && npm run build && cd .. && go build -o nofx-backend main.go
-  ```
-- **Run Command**: Starts the backend (which serves the frontend)
+- **Deployment Type**: Reserved VM (for WebSocket support and long-running processes)
+- **Build Command**: **None** (using pre-built binary)
+  - Binary compiled locally with Go 1.25.0
+  - Replit deployment only has Go 1.24, so we use pre-built binary
+  - Binary size: 40MB (includes all dependencies)
+- **Run Command**: Starts the backend
   ```bash
   ./nofx-backend
   ```

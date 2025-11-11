@@ -41,17 +41,16 @@
 [deployment]
 deploymentTarget = "vm"
 run = ["./nofx-backend"]
-build = ["bash", "-c", "go build -o nofx-backend main.go"]
 ```
+
+**Note**: No build step - using pre-built binary compiled with Go 1.25.0
 
 ### What Happens During Deployment
 
 1. **Build Phase**
-   ```bash
-   go build -o nofx-backend main.go
-   ```
-   - Compiles the Go backend into a single binary
-   - Binary includes all dependencies
+   - **SKIPPED** - Using pre-built binary
+   - Binary already compiled locally with Go 1.25.0
+   - Deployment uses the committed `nofx-backend` binary (40MB)
 
 2. **Run Phase**
    ```bash
@@ -138,16 +137,22 @@ $ ./test-api.sh http://localhost:8080
 
 ## Why Previous Deployment Failed
 
-The error message suggested:
+### First Failure
 - "The backend is configured to run on port 5000"
+- **Root Cause**: Deployment config confusion with workflow port settings
+- **Fix**: Explicit Reserved VM configuration with PORT env var
 
-**Root Cause**: The deployment system may have been confused by the workflow configuration (which uses port 5000 for the frontend in development). However, the deployment configuration is now explicitly set to use Reserved VM with proper PORT handling.
+### Second Failure
+- "Go version 1.25.0 is downloading but not properly installed"
+- **Root Cause**: Replit deployment only has Go 1.24 available, but code requires Go 1.25.0
+- **Fix**: Deploy pre-built binary (no build step needed)
 
-**Solution**: All fixes applied above ensure:
-1. Backend correctly uses Replit's PORT environment variable
-2. Health check responds instantly (2ms)
-3. Server binds to 0.0.0.0 for external access
-4. No blocking operations during startup
+**All Fixes Applied**:
+1. ✅ Backend uses Replit's PORT environment variable
+2. ✅ Health check responds in 2ms
+3. ✅ Server binds to 0.0.0.0 for external access
+4. ✅ Background initialization doesn't block startup
+5. ✅ **Using pre-built binary (no build step)**
 
 ---
 
