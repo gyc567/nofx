@@ -4,3 +4,32 @@ expertMode = true
 
 [nix]
 channel = "stable-25_05"
+packages = ["gcc"]
+
+[workflows]
+runButton = "Project"
+
+[[workflows.workflow]]
+name = "Project"
+mode = "parallel"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "workflow.run"
+args = "fullstack-app"
+
+[[workflows.workflow]]
+name = "fullstack-app"
+author = "agent"
+
+[workflows.workflow.metadata]
+outputType = "webview"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "bash -c \"(./nofx-backend 2>&1 | sed 's/^/[BACKEND] /') & (cd web && npm run dev 2>&1 | sed 's/^/[FRONTEND] /')\""
+waitForPort = 5000
+
+[[ports]]
+localPort = 5000
+externalPort = 80
