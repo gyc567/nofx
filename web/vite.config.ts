@@ -9,13 +9,13 @@ export default defineConfig(({ mode }) => {
     plugins: [react()],
     server: {
       host: '0.0.0.0',
-      port: 3000,
+      port: 5000,
       proxy: {
         '/api': {
           // 开发环境使用localhost，生产环境使用环境变量
           target: env.VITE_API_URL || 'http://localhost:8080',
           changeOrigin: true,
-          secure: true,
+          secure: false,
         },
       },
     },
