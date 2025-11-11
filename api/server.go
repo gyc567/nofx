@@ -1485,8 +1485,9 @@ func (s *Server) handleGetSupportedExchanges(c *gin.Context) {
 
 // Start 启动服务器
 func (s *Server) Start() error {
-        addr := fmt.Sprintf(":%d", s.port)
-        log.Printf("🌐 API服务器启动在 http://localhost%s", addr)
+        // 绑定到 0.0.0.0 确保可以从外部访问
+        addr := fmt.Sprintf("0.0.0.0:%d", s.port)
+        log.Printf("🌐 API服务器启动在 http://0.0.0.0:%d", s.port)
         log.Printf("📊 API文档:")
         log.Printf("  • GET  /api/health           - 健康检查")
         log.Printf("  • GET  /api/traders          - 公开的AI交易员排行榜前50名（无需认证）")
@@ -1511,6 +1512,7 @@ func (s *Server) Start() error {
         log.Printf("  • GET  /api/statistics?trader_id=xxx - 指定trader的统计信息")
         log.Printf("  • GET  /api/performance?trader_id=xxx - 指定trader的AI学习表现分析")
         log.Println()
+        log.Printf("✅ API服务器就绪，等待请求...")
 
         return s.router.Run(addr)
 }

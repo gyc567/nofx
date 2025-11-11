@@ -11,10 +11,11 @@ NOFX is an AI-powered cryptocurrency trading system with support for multiple AI
 - ✅ Frontend runs on port 5000, backend API on port 8080
 - ✅ Admin mode enabled by default (no login required for testing)
 - ✅ **Deployment configured for Replit (Reserved VM)**
-- ✅ **Backend now serves built frontend for production**
-- ✅ **Health check endpoint at `/` for deployment**
 - ✅ **Backend uses PORT environment variable for Replit deployments**
-- ✅ **Build command includes npm install and frontend/backend compilation**
+- ✅ **Health check endpoint at `/` with <50ms response time**
+- ✅ **Backend binds to 0.0.0.0 for external access**
+- ✅ **Market data initialization moved to background (non-blocking)**
+- ✅ **Backend-only deployment (no frontend build)**
 
 ## Architecture
 

@@ -301,23 +301,30 @@ func main() {
                 }
         }
 
-        // 创建并启动API服务器
+        // 创建API服务器
         apiServer := api.NewServer(traderManager, database, apiPort)
+        
+        // 在后台启动耗时的市场数据服务（不阻塞API服务器启动）
         go func() {
-                if err := apiServer.Start(); err != nil {
-                        log.Printf("❌ API服务器错误: %v", err)
-                }
+                log.Println("🔄 后台启动市场数据监控...")
+                // 启动流行情数据 - 默认使用所有交易员设置的币种
+                market.NewWSMonitor(150).Start(database.GetCustomCoins())
         }()
-
-        // 启动流行情数据 - 默认使用所有交易员设置的币种 如果没有设置币种 则优先使用系统默认
-        go market.NewWSMonitor(150).Start(database.GetCustomCoins())
-        //go market.NewWSMonitor(150).Start([]string{}) //这里是一个使用方式 传入空的话 则使用market市场的所有币种
+        
         // 设置优雅退出
         sigChan := make(chan os.Signal, 1)
         signal.Notify(sigChan, os.Interrupt, syscall.SIGTERM)
 
         // TODO: 启动数据库中配置为运行状态的交易员
         // traderManager.StartAll()
+
+        // 启动API服务器（阻塞主线程，确保服务器立即可用）
+        go func() {
+                if err := apiServer.Start(); err != nil {
+                        log.Printf("❌ API服务器错误: %v", err)
+                        os.Exit(1)
+                }
+        }()
 
         // 等待退出信号
         <-sigChan
