@@ -4,10 +4,12 @@ import { useLanguage } from '../contexts/LanguageContext';
 import { t } from '../i18n/translations';
 import { getSystemConfig } from '../lib/config';
 import HeaderBar from './landing/HeaderBar';
+import { NetworkErrorBoundary, NetworkStatusPrompt, useNetworkStatus } from './NetworkErrorBoundary';
 
 export function RegisterPage() {
   const { language } = useLanguage();
   const { register } = useAuth();
+  const { isOnline, isConnected } = useNetworkStatus();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -16,6 +18,7 @@ export function RegisterPage() {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [loading, setLoading] = useState(false);
+  const [networkError, setNetworkError] = useState('');
 
   useEffect(() => {
     // 获取系统配置，检查是否开启内测模式
@@ -30,6 +33,18 @@ export function RegisterPage() {
     e.preventDefault();
     setError('');
     setSuccess('');
+    setNetworkError('');
+
+    // 网络状态检查
+    if (!isOnline) {
+      setError('网络未连接，请检查网络设置后重试');
+      return;
+    }
+
+    if (!isConnected) {
+      setNetworkError('无法连接到服务器，请检查：\n1. 浏览器是否启用了广告拦截器\n2. 网络代理或防火墙设置\n3. 尝试使用无痕模式访问');
+      return;
+    }
 
     // 前端验证
     if (password !== confirmPassword) {
@@ -50,7 +65,14 @@ export function RegisterPage() {
     setLoading(true);
 
     try {
-      const result = await register(email, password, betaCode.trim() || undefined);
+      // 添加超时控制
+      const timeoutPromise = new Promise((_, reject) => {
+        setTimeout(() => reject(new Error('请求超时，请检查网络连接')), 10000);
+      });
+
+      const registerPromise = register(email, password, betaCode.trim() || undefined);
+
+      const result = await Promise.race([registerPromise, timeoutPromise]) as any;
 
       if (result.success) {
         // 注册成功
@@ -61,11 +83,40 @@ export function RegisterPage() {
         }, 2000);
       } else {
         // 注册失败，显示详细错误信息
-        const errorMsg = (result as any).details || result.message || '注册失败，请检查输入信息后重试';
-        setError(errorMsg);
+        let errorMsg = result.message || '注册失败，请检查输入信息后重试';
+        let errorDetails = (result as any).details;
+
+        // 根据错误类型提供针对性建议
+        if (errorMsg.includes('邮箱已被注册')) {
+          errorDetails = '该邮箱已经注册，建议直接登录或使用其他邮箱';
+        } else if (errorMsg.includes('内测码无效')) {
+          errorDetails = '内测码无效或已被使用，请检查后重试';
+        } else if (errorMsg.includes('密码强度不够')) {
+          errorDetails = '密码必须至少8个字符，建议使用大小写字母+数字+特殊字符组合';
+        }
+
+        setError(errorDetails || errorMsg);
       }
-    } catch (err) {
-      setError('网络错误，请检查网络连接后重试');
+    } catch (err: any) {
+      console.error('注册错误:', err);
+
+      // 分类处理不同类型的错误
+      if (err.name === 'TypeError' && err.message.includes('fetch')) {
+        setNetworkError(
+          '网络连接失败！\n\n可能原因：\n' +
+          '1. 浏览器扩展（广告拦截器）阻止了请求\n' +
+          '2. 网络代理或防火墙配置问题\n' +
+          '3. 当前URL被Vercel SSO拦截\n\n' +
+          '解决方案：\n' +
+          '• 尝试在无痕模式下访问\n' +
+          '• 暂时禁用浏览器扩展\n' +
+          `• 使用推荐地址：https://web-pink-omega-40.vercel.app`
+        );
+      } else if (err.message.includes('超时')) {
+        setNetworkError('请求超时，请检查网络连接后重试');
+      } else {
+        setError(err.message || '未知错误，请重试');
+      }
     }
 
     setLoading(false);
@@ -84,22 +135,24 @@ export function RegisterPage() {
   const strengthColors = ['#FF5252', '#FF9800', '#FFC107', '#4CAF50', '#2E7D32'];
 
   return (
-    <div className="min-h-screen" style={{ background: 'var(--brand-black)' }}>
-      <HeaderBar 
-        isLoggedIn={false} 
-        isHomePage={false}
-        currentPage="register"
-        language={language}
-        onLanguageChange={() => {}}
-        onPageChange={(page) => {
-          console.log('RegisterPage onPageChange called with:', page);
-          if (page === 'competition') {
-            window.location.href = '/competition';
-          }
-        }}
-      />
+    <NetworkErrorBoundary>
+      <div className="min-h-screen" style={{ background: 'var(--brand-black)' }}>
+        <NetworkStatusPrompt />
+        <HeaderBar
+          isLoggedIn={false}
+          isHomePage={false}
+          currentPage="register"
+          language={language}
+          onLanguageChange={() => {}}
+          onPageChange={(page) => {
+            console.log('RegisterPage onPageChange called with:', page);
+            if (page === 'competition') {
+              window.location.href = '/competition';
+            }
+          }}
+        />
 
-      <div className="flex items-center justify-center pt-20" style={{ minHeight: 'calc(100vh - 80px)' }}>
+        <div className="flex items-center justify-center pt-20" style={{ minHeight: 'calc(100vh - 80px)' }}>
         <div className="w-full max-w-md">
 
           {/* Logo */}
@@ -224,8 +277,28 @@ export function RegisterPage() {
               </div>
             )}
 
+            {/* 网络错误消息 */}
+            {networkError && (
+              <div className="px-4 py-4 rounded-lg" style={{ background: 'var(--binance-red-bg)', border: '1px solid var(--binance-red)' }}>
+                <div className="flex items-start gap-3">
+                  <span className="text-2xl">🌐</span>
+                  <div className="flex-1">
+                    <p className="font-semibold mb-2" style={{ color: 'var(--binance-red)' }}>网络连接失败</p>
+                    <pre className="text-sm whitespace-pre-wrap" style={{ color: 'var(--binance-red)' }}>{networkError}</pre>
+                    <button
+                      onClick={() => window.location.href = 'https://web-pink-omega-40.vercel.app/register'}
+                      className="mt-3 px-3 py-1 text-xs rounded transition-all hover:scale-105"
+                      style={{ background: 'var(--brand-yellow)', color: 'var(--brand-black)' }}
+                    >
+                      使用推荐地址访问
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
+
             {/* 错误消息 */}
-            {error && (
+            {error && !networkError && (
               <div className="px-4 py-3 rounded-lg" style={{ background: 'var(--binance-red-bg)', border: '1px solid var(--binance-red)' }}>
                 <div className="flex items-start gap-3">
                   <span className="text-xl">⚠️</span>
@@ -287,8 +360,20 @@ export function RegisterPage() {
             </button>
           </p>
         </div>
+
+        {/* 网络状态指示器 */}
+        {!isConnected && (
+          <div className="text-center mt-4">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs"
+                 style={{ background: 'var(--binance-red-bg)', color: 'var(--binance-red)' }}>
+              <span className="w-2 h-2 rounded-full bg-current animate-pulse"></span>
+              <span>网络连接异常</span>
+            </div>
+          </div>
+        )}
         </div>
       </div>
     </div>
+    </NetworkErrorBoundary>
   );
 }
