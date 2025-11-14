@@ -1,8 +1,8 @@
-# 📘 NOFX User Guides
+# 📘 Monnaire Trading Agent OS User Guides
 
 **Language:** [English](README.md) | [中文](README.zh-CN.md)
 
-Comprehensive guides to help you use NOFX effectively.
+Comprehensive guides to help you use Monnaire Trading Agent OS effectively.
 
 ---
 

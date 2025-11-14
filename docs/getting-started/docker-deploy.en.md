@@ -1,6 +1,6 @@
 # 🐳 Docker One-Click Deployment Guide
 
-This guide will help you quickly deploy the NOFX AI Trading Competition System using Docker.
+This guide will help you quickly deploy the Monnaire Trading Agent OS AI Trading Competition System using Docker.
 
 ## 📋 Prerequisites
 
@@ -468,6 +468,6 @@ docker system prune -a             # Clean Docker resources
 
 ---
 
-🎉 Congratulations! You've successfully deployed the NOFX AI Trading Competition System!
+🎉 Congratulations! You've successfully deployed the Monnaire Trading Agent OS AI Trading Competition System!
 
 If you encounter any issues, please check the [Troubleshooting](#-troubleshooting) section or submit an issue.

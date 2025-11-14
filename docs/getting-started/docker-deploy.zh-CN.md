@@ -1,6 +1,6 @@
 # 🐳 Docker 一键部署教程
 
-本教程将指导你使用 Docker 快速部署 NOFX AI 交易竞赛系统。
+本教程将指导你使用 Docker 快速部署 Monnaire Trading Agent OS AI 交易竞赛系统。
 
 ## 📋 前置要求
 
@@ -484,6 +484,6 @@ docker system prune -a             # 清理 Docker 资源
 
 ---
 
-🎉 恭喜！你已经成功部署了 NOFX AI 交易竞赛系统！
+🎉 恭喜！你已经成功部署了 Monnaire Trading Agent OS AI 交易竞赛系统！
 
 如有问题，请查看[故障排查](#-故障排查)部分或提交 Issue。

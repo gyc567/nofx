@@ -1,15 +1,15 @@
 # 📡 Signal Source Configuration 配置手册
-## NOFX AI Trading System - 新手完全指南
+## Monnaire Trading Agent OS - 新手完全指南
 
 ---
 
 ## 🎯 什么是Signal Source？
 
-**Signal Source（信号源）** 是NOFX AI交易系统的"情报中心"，负责向AI交易员提供实时市场数据和交易信号。
+**Signal Source（信号源）** 是Monnaire Trading Agent OS AI交易系统的"情报中心"，负责向AI交易员提供实时市场数据和交易信号。
 
 ### 📊 信号源类型
 
-NOFX支持**两种主要信号源**：
+Monnaire Trading Agent OS支持**两种主要信号源**：
 
 #### 1. **COIN POOL（币种池）**
 - **功能**：提供高潜力币种排行榜
@@ -27,7 +27,7 @@ NOFX支持**两种主要信号源**：
 
 ### 步骤1：访问配置界面
 
-1. 登录NOFX系统
+1. 登录Monnaire Trading Agent OS系统
 2. 进入 **AI交易员页面**
 3. 点击右上角 **"📡 Signal Source"** 按钮
    ![Signal Source按钮位置](按钮位置示意图)
@@ -453,7 +453,7 @@ https://fapi.binance.com/futures/data/globalLongShortAccountRatio?symbol=BTCUSDT
 
 **📅 文档版本**：v1.0
 **🎯 最后更新**：2025-11-14
-**👨‍💻 适用版本**：NOFX AI Trading System v1.0+
+**👨‍💻 适用版本**：Monnaire Trading Agent OS v1.0+
 
 ---
 

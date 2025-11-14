@@ -65,15 +65,15 @@ addr := fmt.Sprintf("0.0.0.0:%d", s.port)
 
 # Health check responds instantly ✅
 $ curl http://localhost:8080/
-{"status":"ok","service":"NOFX AI Trading System"}
+{"status":"ok","service":"Monnaire Trading Agent OS AI Trading System"}
 Response: 118 microseconds
 
 # PORT env var supported ✅
-$ PORT=9999 ./nofx-backend
+$ PORT=9999 ./monnoire-backend
 ✓ 使用环境变量 PORT: 9999
 
 # Binary ready ✅
-$ ls -lh nofx-backend
+$ ls -lh monnoire-backend
 40M executable
 ```
 
@@ -98,7 +98,7 @@ $ ls -lh nofx-backend
 ### After Selecting Reserved VM:
 ```
 Starting Reserved VM deployment...
-Running: ./nofx-backend
+Running: ./monnoire-backend
 
 ✓ 使用环境变量 PORT: 8080
 ✓ API服务器启动在 http://0.0.0.0:8080  

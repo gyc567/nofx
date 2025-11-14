@@ -1,6 +1,6 @@
-# 👥 NOFX Community
+# 👥 Monnaire Trading Agent OS Community
 
-Welcome to the NOFX community! This section contains everything you need to contribute and participate.
+Welcome to the Monnaire Trading Agent OS community! This section contains everything you need to contribute and participate.
 
 ---
 
@@ -43,7 +43,7 @@ We're introducing a new PR management system to improve code quality and make co
 
 ### Active Bounties
 
-NOFX offers bounties for valuable contributions:
+Monnaire Trading Agent OS offers bounties for valuable contributions:
 
 | Category | Reward Range | Examples |
 |----------|--------------|----------|
@@ -175,7 +175,7 @@ NOFX offers bounties for valuable contributions:
 
 ### For Contributors
 
-**Understanding NOFX:**
+**Understanding Monnaire Trading Agent OS:**
 - [System Architecture](../architecture/README.md) *(coming soon)*
 - [API Reference](../architecture/api-reference.md) *(coming soon)*
 - [Database Schema](../architecture/database-schema.md) *(coming soon)*

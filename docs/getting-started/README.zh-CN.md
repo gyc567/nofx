@@ -1,6 +1,6 @@
-# 🚀 NOFX 快速开始
+# 🚀 Monnaire Trading Agent OS 快速开始
 
-本节包含让 NOFX 运行起来所需的所有文档。
+本节包含让 Monnaire Trading Agent OS 运行起来所需的所有文档。
 
 ## 📋 部署选项
 

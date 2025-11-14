@@ -70,7 +70,7 @@ func (s *Server) setupRoutes() {
         s.router.GET("/", func(c *gin.Context) {
                 c.JSON(http.StatusOK, gin.H{
                         "status": "ok",
-                        "service": "NOFX AI Trading System",
+                        "service": "Monnaire Trading Agent OS",
                 })
         })
         

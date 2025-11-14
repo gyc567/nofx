@@ -1,4 +1,4 @@
-# 🚀 How to Deploy NOFX Backend to Replit
+# 🚀 How to Deploy Monnaire Trading Agent OS Backend to Replit
 
 ## ⚠️ IMPORTANT: You MUST Select "Reserved VM"
 
@@ -31,7 +31,7 @@ In the deployment dialog/page:
 ### Step 3: Configure Reserved VM
 After selecting Reserved VM:
 - **CPU/RAM**: Select your preferred size (default is fine for testing)
-- **Run command**: Should show `./nofx-backend` (already configured)
+- **Run command**: Should show `./monnoire-backend` (already configured)
 - **Build command**: Should be empty/none (already configured)
 
 ### Step 4: Deploy
@@ -71,18 +71,18 @@ After selecting Reserved VM:
 ```toml
 [deployment]
 deploymentTarget = "vm"
-run = ["./nofx-backend"]
+run = ["./monnoire-backend"]
 ```
 
 ### ✅ Local Verification
 ```bash
-$ ./nofx-backend
+$ ./monnoire-backend
 🌐 API服务器启动在 http://0.0.0.0:8080
 ✅ API服务器就绪，等待请求...
 🔄 后台启动市场数据监控...
 
 $ curl http://localhost:8080/
-{"status":"ok","service":"NOFX AI Trading System"}
+{"status":"ok","service":"Monnaire Trading Agent OS AI Trading System"}
 Response time: 118µs
 ```
 
@@ -94,7 +94,7 @@ Response time: 118µs
 ```
 Uploading files...
 Starting Reserved VM deployment...
-Running: ./nofx-backend
+Running: ./monnoire-backend
 
 Logs:
 ✓ 使用环境变量 PORT: <assigned-port>
@@ -126,7 +126,7 @@ curl https://your-deployment.repl.co/
 
 **Expected:**
 ```json
-{"status":"ok","service":"NOFX AI Trading System"}
+{"status":"ok","service":"Monnaire Trading Agent OS AI Trading System"}
 ```
 
 ### 2. Test All Endpoints
@@ -162,7 +162,7 @@ curl https://your-deployment.repl.co/
 
 **Fix**:
 1. Verify .replit has `deploymentTarget = "vm"` and no build command
-2. Ensure `nofx-backend` binary exists (40MB file)
+2. Ensure `monnoire-backend` binary exists (40MB file)
 3. Try deploying again with Reserved VM selected
 
 ### Deployment Stuck
@@ -186,7 +186,7 @@ Replit Publish Dialog
 │                                     │
 │  Configuration:                     │
 │  CPU/RAM: [Select size ▼]          │
-│  Run: ./nofx-backend                │
+│  Run: ./monnoire-backend                │
 │  Build: (none)                      │
 │                                     │
 │  [Cancel]  [Deploy]                 │
@@ -224,9 +224,9 @@ That's it! The deployment will succeed.
 | Setting | Value |
 |---------|-------|
 | **Deployment Type** | **Reserved VM** (NOT Autoscale) |
-| **Run Command** | `./nofx-backend` |
+| **Run Command** | `./monnoire-backend` |
 | **Build Command** | (none/empty) |
-| **Binary** | `nofx-backend` (40MB, pre-built) |
+| **Binary** | `monnoire-backend` (40MB, pre-built) |
 | **Port** | Uses PORT env var |
 | **Health Check** | `GET /` returns 200 OK |
 

@@ -2,7 +2,7 @@
 
 **语言：** [English](README.md) | [中文](README.zh-CN.md)
 
-此目录包含 NOFX 项目维护者和想要了解我们流程的贡献者的文档。
+此目录包含 Monnaire Trading Agent OS 项目维护者和想要了解我们流程的贡献者的文档。
 
 ---
 

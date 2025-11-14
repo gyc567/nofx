@@ -1,8 +1,8 @@
-# 🤝 Contributing to NOFX
+# 🤝 Contributing to Monnaire Trading Agent OS
 
 **Language:** [English](CONTRIBUTING.md) | [中文](docs/i18n/zh-CN/CONTRIBUTING.md)
 
-Thank you for your interest in contributing to NOFX! This document provides guidelines and workflows for contributing to the project.
+Thank you for your interest in contributing to Monnaire Trading Agent OS! This document provides guidelines and workflows for contributing to the project.
 
 ---
 
@@ -312,7 +312,7 @@ const TC = (props) => {
 ### File Structure
 
 ```
-NOFX/
+Monnaire Trading Agent OS/
 ├── cmd/               # Main applications
 ├── internal/          # Private code
 │   ├── exchange/      # Exchange adapters
@@ -476,6 +476,6 @@ Reviewers will check:
 
 ## 🙏 Thank You!
 
-Your contributions make NOFX better for everyone. We appreciate your time and effort!
+Your contributions make Monnaire Trading Agent OS better for everyone. We appreciate your time and effort!
 
 **Happy coding! 🚀**

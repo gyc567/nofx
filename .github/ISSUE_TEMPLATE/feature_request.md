@@ -1,6 +1,6 @@
 ---
 name: Feature Request
-about: Suggest a new feature for NOFX
+about: Suggest a new feature for Monnaire Trading Agent OS
 title: '[FEATURE] '
 labels: enhancement
 assignees: ''

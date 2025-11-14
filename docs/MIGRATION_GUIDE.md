@@ -2,7 +2,7 @@
 
 ## What Changed?
 
-NOFX documentation has been reorganized into a structured `docs/` directory for better organization and navigation.
+Monnaire Trading Agent OS documentation has been reorganized into a structured `docs/` directory for better organization and navigation.
 
 ## 🗺️ File Locations (Old → New)
 

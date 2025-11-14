@@ -242,7 +242,7 @@ lsof -i :8080
 netstat -tulpn | grep 8080
 
 # 杀死进程或在 .env 中更改端口
-NOFX_BACKEND_PORT=8081
+MONNAIRE_BACKEND_PORT=8081
 ```
 
 ---
@@ -330,7 +330,7 @@ environment:
    - 登录币安 → API 管理
    - 删除旧密钥
    - 创建新密钥
-   - 更新 NOFX 配置
+   - 更新 Monnaire Trading Agent OS 配置
 
 **解决方案 3: 检查速率限制**
 
@@ -387,7 +387,7 @@ environment:
 
 **解决方案:**
 ```bash
-# 停止所有 NOFX 进程
+# 停止所有 Monnaire Trading Agent OS 进程
 docker compose down
 # 或
 pkill nofx

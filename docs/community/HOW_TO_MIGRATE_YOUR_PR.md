@@ -269,4 +269,4 @@ Once migrated:
 3. ✅ Wait for maintainer review
 4. ✅ Celebrate when merged! 🎉
 
-**Thank you for contributing to NOFX!**
+**Thank you for contributing to Monnaire Trading Agent OS!**

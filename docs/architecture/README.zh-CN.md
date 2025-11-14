@@ -1,14 +1,14 @@
-# 🏗️ NOFX 架构文档
+# 🏗️ Monnaire Trading Agent OS 架构文档
 
 **语言:** [English](README.md) | [中文](README.zh-CN.md)
 
-为希望了解 NOFX 内部实现的开发者提供的技术文档。
+为希望了解 Monnaire Trading Agent OS 内部实现的开发者提供的技术文档。
 
 ---
 
 ## 📋 概述
 
-NOFX 是一个全栈 AI 交易平台：
+Monnaire Trading Agent OS 是一个全栈 AI 交易平台：
 - **后端：** Go (Gin 框架, SQLite)
 - **前端：** React/TypeScript (Vite, TailwindCSS)
 - **架构：** 微服务启发的模块化设计

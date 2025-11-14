@@ -1,7 +1,7 @@
-# NOFX AI Trading System - Replit Deployment
+# Monnaire Trading Agent OS AI Trading System - Replit Deployment
 
 ## Project Overview
-NOFX is an AI-powered cryptocurrency trading system with support for multiple AI models (DeepSeek, Qwen) and exchanges (Binance, Hyperliquid, Aster DEX). This is a full-stack application with a Go backend and React/Vite frontend.
+Monnaire Trading Agent OS is an AI-powered cryptocurrency trading system with support for multiple AI models (DeepSeek, Qwen) and exchanges (Binance, Hyperliquid, Aster DEX). This is a full-stack application with a Go backend and React/Vite frontend.
 
 ## Recent Changes (November 11, 2025)
 - ✅ Migrated from Vercel to Replit
@@ -22,7 +22,7 @@ NOFX is an AI-powered cryptocurrency trading system with support for multiple AI
 
 ### Backend (Go)
 - **Port**: Uses `PORT` environment variable (defaults to 8080 in dev)
-- **Binary**: `nofx-backend` (pre-compiled)
+- **Binary**: `monnoire-backend` (pre-compiled)
 - **Database**: SQLite (`config.db`)
 - **Features**:
   - REST API for trader management
@@ -42,7 +42,7 @@ NOFX is an AI-powered cryptocurrency trading system with support for multiple AI
 ## Project Structure
 ```
 .
-├── nofx-backend          # Compiled Go binary
+├── monnoire-backend          # Compiled Go binary
 ├── main.go               # Go backend entry point
 ├── config.json           # System configuration
 ├── config.db             # SQLite database
@@ -61,7 +61,7 @@ NOFX is an AI-powered cryptocurrency trading system with support for multiple AI
 
 ### Development Mode
 The application uses a single workflow that starts both services:
-- Backend: `./nofx-backend` (pre-compiled Go binary on port 8080)
+- Backend: `./monnoire-backend` (pre-compiled Go binary on port 8080)
 - Frontend: `cd web && npm run dev` (Vite dev server on port 5000)
 
 Both services start automatically via the `fullstack-app` workflow.
@@ -75,13 +75,13 @@ The deployment is configured for **Replit Reserved VM** with:
   - Binary size: 40MB (includes all dependencies)
 - **Run Command**: Starts the backend
   ```bash
-  ./nofx-backend
+  ./monnoire-backend
   ```
 - **Port**: Backend automatically uses Replit's `PORT` environment variable
 - **Configuration File**: `.replit` contains deployment settings
 
 The backend serves the built frontend from `web/dist` and provides:
-- **Health Check**: `GET /` returns `{"status":"ok","service":"NOFX AI Trading System"}`
+- **Health Check**: `GET /` returns `{"status":"ok","service":"Monnaire Trading Agent OS AI Trading System"}`
 - **API Endpoints**: All API routes under `/api/*`
 - **Static Assets**: Frontend assets served from `/assets/*`
 - **SPA Routing**: Non-API routes serve `index.html` for client-side routing
@@ -106,7 +106,7 @@ API keys for exchanges and AI models are stored in the SQLite database and confi
 ### Rebuilding the Backend
 If you modify the Go code, rebuild the backend:
 ```bash
-go build -o nofx-backend main.go
+go build -o monnoire-backend main.go
 ```
 
 ### Rebuilding the Frontend
@@ -138,12 +138,12 @@ The deployment is configured to deploy **backend only** (no frontend build):
 4. Click **Publish**
 
 The deployment will:
-1. Compile the backend (`go build -o nofx-backend main.go`)
+1. Compile the backend (`go build -o monnoire-backend main.go`)
 2. Start the backend binary (REST API server)
 
 ### Deployment Health Checks
 - **Endpoint**: `GET /`
-- **Response**: `{"status":"ok","service":"NOFX AI Trading System"}`
+- **Response**: `{"status":"ok","service":"Monnaire Trading Agent OS AI Trading System"}`
 - **Timeout**: Default Replit timeout settings
 
 ### Testing the Deployed API
@@ -180,8 +180,8 @@ After deployment, use the provided test script:
 ## Troubleshooting
 
 ### Backend not starting
-- Check if `nofx-backend` binary exists: `ls -lh nofx-backend`
-- Rebuild if needed: `go build -o nofx-backend main.go`
+- Check if `monnoire-backend` binary exists: `ls -lh monnoire-backend`
+- Rebuild if needed: `go build -o monnoire-backend main.go`
 - Check logs in the workflow console
 
 ### Frontend not displaying in production
@@ -191,7 +191,7 @@ After deployment, use the provided test script:
 
 ### Deployment health check failing
 - Verify root endpoint responds: `curl http://localhost:8080/`
-- Should return: `{"status":"ok","service":"NOFX AI Trading System"}`
+- Should return: `{"status":"ok","service":"Monnaire Trading Agent OS AI Trading System"}`
 
 ### Database issues
 - Delete `config.db` to reset (will lose all data)

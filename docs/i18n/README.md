@@ -1,8 +1,8 @@
 # 🌍 International Documentation / 国际化文档
 
-NOFX documentation is available in multiple languages.
+Monnaire Trading Agent OS documentation is available in multiple languages.
 
-NOFX 文档提供多种语言版本。
+Monnaire Trading Agent OS 文档提供多种语言版本。
 
 ---
 
@@ -130,7 +130,7 @@ faq.zh-CN.md                 → Chinese FAQ
 
 ## 🌐 Request a New Language / 请求新语言
 
-### Want NOFX in your language? / 希望 NOFX 支持你的语言？
+### Want Monnaire Trading Agent OS in your language? / 希望 Monnaire Trading Agent OS 支持你的语言？
 
 **Steps / 步骤:**
 

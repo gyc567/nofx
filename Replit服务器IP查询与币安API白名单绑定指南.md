@@ -224,7 +224,7 @@ nofx-gyc567.replit.app.  300  IN  A  54.193.45.123
 
 **如果您需要创建新密钥**：
 1. 点击"创建API"按钮
-2. 输入API名称（如：NOFX-Trading）
+2. 输入API名称（如：Monnaire Trading Agent OS-Trading）
 3. 设置安全验证（密码、2FA）
 4. 创建成功后会显示**API Key**和**Secret Key**
    ```
@@ -295,7 +295,7 @@ nofx-gyc567.replit.app.  300  IN  A  54.193.45.123
 ┌─────────────────────────────────────────┐
 │  API密钥信息                             │
 ├─────────────────────────────────────────┤
-│  API Name: NOFX-Trading-Bot             │
+│  API Name: Monnaire Trading Agent OS-Trading-Bot             │
 │  API Key: bnc123456789abcdef            │
 │  Secret: [已隐藏]                        │
 │                                         │

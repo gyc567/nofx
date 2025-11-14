@@ -1,8 +1,8 @@
-# 🚀 Getting Started with NOFX
+# 🚀 Getting Started with Monnaire Trading Agent OS
 
 **Language:** [English](README.md) | [中文](README.zh-CN.md)
 
-This section contains all the documentation you need to get NOFX up and running.
+This section contains all the documentation you need to get Monnaire Trading Agent OS up and running.
 
 ## 📋 Deployment Options
 

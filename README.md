@@ -1,4 +1,4 @@
-# 🤖 NOFX - Agentic Trading OS
+# 🤖 Monnaire Trading Agent OS - Agentic Trading OS
 
 [![Go Version](https://img.shields.io/badge/Go-1.21+-00ADD8?style=flat&logo=go)](https://golang.org/)
 [![React](https://img.shields.io/badge/React-18+-61DAFB?style=flat&logo=react)](https://reactjs.org/)
@@ -58,7 +58,7 @@ When deploying to Replit:
 
 ## 🚀 Universal AI Trading Operating System
 
-**NOFX** is a **universal Agentic Trading OS** built on a unified architecture. We've successfully closed the loop in crypto markets: **"Multi-Agent Decision → Unified Risk Control → Low-Latency Execution → Live/Paper Account Backtesting"**, and are now expanding this same technology stack to **stocks, futures, options, forex, and all financial markets**.
+**Monnaire Trading Agent OS** is a **universal Agentic Trading OS** built on a unified architecture. We've successfully closed the loop in crypto markets: **"Multi-Agent Decision → Unified Risk Control → Low-Latency Execution → Live/Paper Account Backtesting"**, and are now expanding this same technology stack to **stocks, futures, options, forex, and all financial markets**.
 
 ### 🎯 Core Features
 
@@ -89,7 +89,7 @@ We are currently raising our **seed round**.
 
 Join our Telegram developer community to discuss, share ideas, and get support:
 
-**💬 [NOFX Developer Community](https://t.me/nofx_dev_community)**
+**💬 [Monnaire Trading Agent OS Developer Community](https://t.me/nofx_dev_community)**
 
 ---
 
@@ -97,7 +97,7 @@ Join our Telegram developer community to discuss, share ideas, and get support:
 
 ### 🚀 Multi-Exchange Support!
 
-NOFX now supports **three major exchanges**: Binance, Hyperliquid, and Aster DEX!
+Monnaire Trading Agent OS now supports **three major exchanges**: Binance, Hyperliquid, and Aster DEX!
 
 #### **Hyperliquid Exchange**
 
@@ -165,7 +165,7 @@ A Binance-compatible decentralized perpetual futures exchange!
 
 ## ✨ Current Implementation - Crypto Markets
 
-NOFX is currently **fully operational in cryptocurrency markets** with the following proven capabilities:
+Monnaire Trading Agent OS is currently **fully operational in cryptocurrency markets** with the following proven capabilities:
 
 ### 🏆 Multi-Agent Competition Framework
 - **Live Agent Battle**: Qwen vs DeepSeek models compete in real-time trading
@@ -213,7 +213,7 @@ NOFX is currently **fully operational in cryptocurrency markets** with the follo
 
 ## 🔮 Roadmap - Universal Market Expansion
 
-NOFX is on a mission to become the **Universal AI Trading Operating System** for all financial markets.
+Monnaire Trading Agent OS is on a mission to become the **Universal AI Trading Operating System** for all financial markets.
 
 **Vision:** Same architecture. Same agent framework. All markets.
 
@@ -238,7 +238,7 @@ NOFX is on a mission to become the **Universal AI Trading Operating System** for
 
 ## 🏗️ Technical Architecture
 
-NOFX is built with a modern, modular architecture:
+Monnaire Trading Agent OS is built with a modern, modular architecture:
 
 - **Backend:** Go with Gin framework, SQLite database
 - **Frontend:** React 18 + TypeScript + Vite + TailwindCSS
@@ -509,7 +509,7 @@ Open your browser and visit: **🌐 http://localhost:3000**
 
 #### 🔷 Alternative: Using Hyperliquid Exchange
 
-**NOFX also supports Hyperliquid** - a decentralized perpetual futures exchange. To use Hyperliquid instead of Binance:
+**Monnaire Trading Agent OS also supports Hyperliquid** - a decentralized perpetual futures exchange. To use Hyperliquid instead of Binance:
 
 **Step 1**: Get your Ethereum private key (for Hyperliquid authentication)
 
@@ -553,7 +553,7 @@ Open your browser and visit: **🌐 http://localhost:3000**
 
 #### 🔶 Alternative: Using Aster DEX Exchange
 
-**NOFX also supports Aster DEX** - a Binance-compatible decentralized perpetual futures exchange!
+**Monnaire Trading Agent OS also supports Aster DEX** - a Binance-compatible decentralized perpetual futures exchange!
 
 **Why Choose Aster?**
 - 🎯 Binance-compatible API (easy migration)

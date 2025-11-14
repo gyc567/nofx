@@ -31,7 +31,7 @@
 - ✅ TypeScript编译成功
 - ✅ Vite构建完成
 - ✅ 所有依赖安装完成
-- ✅ 品牌更新应用（NOFX → Monnaire Trading Agent OS）
+- ✅ 品牌更新应用（Monnaire Trading Agent OS → Monnaire Trading Agent OS）
 
 ---
 

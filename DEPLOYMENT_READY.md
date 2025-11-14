@@ -1,4 +1,4 @@
-# ✅ NOFX Backend - READY FOR DEPLOYMENT
+# ✅ Monnaire Trading Agent OS Backend - READY FOR DEPLOYMENT
 
 ## All Issues Resolved ✅
 
@@ -12,7 +12,7 @@ The backend is now ready for deployment to Replit Reserved VM. All deployment is
 ```toml
 [deployment]
 deploymentTarget = "vm"
-run = ["./nofx-backend"]
+run = ["./monnaire-backend"]
 ```
 
 **Key Points:**
@@ -27,21 +27,21 @@ run = ["./nofx-backend"]
 
 ### 1. Binary Status
 ```bash
-$ ls -lh nofx-backend
--rwxr-xr-x 1 runner runner 40M Nov 11 09:47 nofx-backend
+$ ls -lh monnaire-backend
+-rwxr-xr-x 1 runner runner 40M Nov 11 09:47 monnaire-backend
 ```
 ✅ Binary exists and is executable
 
 ### 2. Health Check
 ```bash
 $ curl http://localhost:8080/
-{"service":"NOFX AI Trading System","status":"ok"}
+{"service":"Monnaire Trading Agent OS AI Trading System","status":"ok"}
 ```
 ✅ Health check responds in ~2ms
 
 ### 3. PORT Environment Variable
 ```bash
-$ PORT=5000 ./nofx-backend
+$ PORT=5000 ./monnaire-backend
 ✓ 使用环境变量 PORT: 5000
 ✓ API服务器启动在 http://0.0.0.0:5000
 ✓ API服务器就绪，等待请求...
@@ -50,8 +50,8 @@ $ PORT=5000 ./nofx-backend
 
 ### 4. Git Tracking
 ```bash
-$ git ls-files nofx-backend
-nofx-backend
+$ git ls-files monnoire-backend
+monnoire-backend
 ```
 ✅ Binary is tracked and will be deployed
 
@@ -94,7 +94,7 @@ nofx-backend
 ### Step 3: Review Configuration
 You should see:
 - **Deployment Type**: Reserved VM
-- **Run Command**: `./nofx-backend`
+- **Run Command**: `./monnoire-backend`
 - **Build Command**: (empty/none)
 
 ### Step 4: Deploy
@@ -109,7 +109,7 @@ You should see:
 ```
 Uploading files...
 Starting deployment...
-Running: ./nofx-backend
+Running: ./monnoire-backend
 ✓ 使用环境变量 PORT: <replit-port>
 ✓ API服务器启动在 http://0.0.0.0:<port>
 ✓ API服务器就绪，等待请求...
@@ -133,7 +133,7 @@ curl https://your-deployment.repl.co/
 
 **Expected Response:**
 ```json
-{"status":"ok","service":"NOFX AI Trading System"}
+{"status":"ok","service":"Monnaire Trading Agent OS AI Trading System"}
 ```
 
 ### 2. Test All Endpoints
@@ -152,7 +152,7 @@ curl https://your-deployment.repl.co/
 ```
 Replit Reserved VM
 ├─ No Build Step (using pre-compiled binary)
-├─ Binary: ./nofx-backend (40MB)
+├─ Binary: ./monnoire-backend (40MB)
 │  ├─ Compiled with Go 1.25.0
 │  ├─ Includes all dependencies
 │  └─ Runs on 0.0.0.0:$PORT
@@ -195,7 +195,7 @@ Replit Reserved VM
 
 2. **Verify Binary is Deployed**
    - SSH into deployment (if possible)
-   - Run: `ls -lh nofx-backend`
+   - Run: `ls -lh monnoire-backend`
    - Should show: 40M executable
 
 3. **Test Health Endpoint**

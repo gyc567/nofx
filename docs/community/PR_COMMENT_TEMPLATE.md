@@ -9,7 +9,7 @@ This template is for maintainers to comment on existing PRs to introduce the new
 ```markdown
 Hi @{username}! 👋
 
-Thank you for your contribution to NOFX!
+Thank you for your contribution to Monnaire Trading Agent OS!
 
 ## 🚀 New PR Management System
 
@@ -68,7 +68,7 @@ Just ask here! We're happy to help. 🙏
 ```markdown
 嗨 @{username}！👋
 
-感谢你为 NOFX 做出的贡献！
+感谢你为 Monnaire Trading Agent OS 做出的贡献！
 
 ## 🚀 新的 PR 管理系统
 

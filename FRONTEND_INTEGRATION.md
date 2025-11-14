@@ -1,8 +1,8 @@
-# NOFX 前端对接文档
+# Monnaire Trading Agent OS 前端对接文档
 
 ## 概述
 
-本文档为前端开发者提供与NOFX AI交易系统后端API的集成指南。
+本文档为前端开发者提供与Monnaire Trading Agent OS AI交易系统后端API的集成指南。
 
 ---
 

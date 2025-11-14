@@ -1,4 +1,4 @@
-# NOFX AI Trading System - API 文档
+# Monnaire Trading Agent OS AI Trading System - API 文档
 
 ## 基础信息
 
@@ -33,7 +33,7 @@ GET /
 ```json
 {
   "status": "ok",
-  "service": "NOFX AI Trading System"
+  "service": "Monnaire Trading Agent OS AI Trading System"
 }
 ```
 

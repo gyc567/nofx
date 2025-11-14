@@ -1,4 +1,4 @@
-# NOFX Backend Deployment Checklist ✅
+# Monnaire Trading Agent OS Backend Deployment Checklist ✅
 
 ## All Health Check Issues FIXED
 
@@ -6,7 +6,7 @@
 
 1. **Health Check Endpoint at Root Path (`/`)**
    - ✅ Endpoint exists: `GET /`
-   - ✅ Returns: `{"status":"ok","service":"NOFX AI Trading System"}`
+   - ✅ Returns: `{"status":"ok","service":"Monnaire Trading Agent OS AI Trading System"}`
    - ✅ Response time: **2ms** (verified locally)
    - ✅ Always returns 200 OK, no dependencies on initialization
 
@@ -18,7 +18,7 @@
 3. **Uses PORT Environment Variable**
    - ✅ Reads `PORT` from environment (Replit Cloud Run requirement)
    - ✅ Falls back to 8080 if PORT not set
-   - ✅ Verified: `PORT=9999 ./nofx-backend` → binds to port 9999
+   - ✅ Verified: `PORT=9999 ./monnoire-backend` → binds to port 9999
    - ✅ Code in `main.go` lines 293-297
 
 4. **Expensive Operations Moved to Background**
@@ -40,7 +40,7 @@
 ```toml
 [deployment]
 deploymentTarget = "vm"
-run = ["./nofx-backend"]
+run = ["./monnoire-backend"]
 ```
 
 **Note**: No build step - using pre-built binary compiled with Go 1.25.0
@@ -50,11 +50,11 @@ run = ["./nofx-backend"]
 1. **Build Phase**
    - **SKIPPED** - Using pre-built binary
    - Binary already compiled locally with Go 1.25.0
-   - Deployment uses the committed `nofx-backend` binary (40MB)
+   - Deployment uses the committed `monnoire-backend` binary (40MB)
 
 2. **Run Phase**
    ```bash
-   ./nofx-backend
+   ./monnoire-backend
    ```
    - Starts the backend server
    - Reads `PORT` environment variable from Replit
@@ -64,7 +64,7 @@ run = ["./nofx-backend"]
 
 3. **Health Check**
    - Replit checks: `GET http://your-deployment/`
-   - Expected response: `{"status":"ok","service":"NOFX AI Trading System"}`
+   - Expected response: `{"status":"ok","service":"Monnaire Trading Agent OS AI Trading System"}`
    - Expected status: `200 OK`
    - Expected time: `< 5 seconds` (actual: ~2ms)
 
@@ -75,14 +75,14 @@ run = ["./nofx-backend"]
 ### Health Check Test
 ```bash
 $ curl -w "\n响应时间: %{time_total}s\n" http://localhost:8080/
-{"service":"NOFX AI Trading System","status":"ok"}
+{"service":"Monnaire Trading Agent OS AI Trading System","status":"ok"}
 响应时间: 0.002099s
 ```
 ✅ **2ms response time** - Far below 5s timeout
 
 ### PORT Environment Variable Test
 ```bash
-$ PORT=9999 ./nofx-backend
+$ PORT=9999 ./monnoire-backend
 2025/11/11 09:42:19 ✓ 使用环境变量 PORT: 9999
 2025/11/11 09:42:19 🌐 API服务器启动在 http://0.0.0.0:9999
 2025/11/11 09:42:19 ✅ API服务器就绪，等待请求...
@@ -108,8 +108,8 @@ $ ./test-api.sh http://localhost:8080
    - This is required for WebSocket support and long-running processes
 
 ### 3. Review Configuration
-   - Build command: `go build -o nofx-backend main.go`
-   - Run command: `./nofx-backend`
+   - Build command: `go build -o monnoire-backend main.go`
+   - Run command: `./monnoire-backend`
    - Deployment type: `vm`
 
 ### 4. Deploy
@@ -124,7 +124,7 @@ $ ./test-api.sh http://localhost:8080
    ```
    Expected response:
    ```json
-   {"status":"ok","service":"NOFX AI Trading System"}
+   {"status":"ok","service":"Monnaire Trading Agent OS AI Trading System"}
    ```
 
 ### 6. Test All Endpoints

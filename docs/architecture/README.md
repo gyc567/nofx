@@ -1,14 +1,14 @@
-# 🏗️ NOFX Architecture Documentation
+# 🏗️ Monnaire Trading Agent OS Architecture Documentation
 
 **Language:** [English](README.md) | [中文](README.zh-CN.md)
 
-Technical documentation for developers who want to understand NOFX internals.
+Technical documentation for developers who want to understand Monnaire Trading Agent OS internals.
 
 ---
 
 ## 📋 Overview
 
-NOFX is a full-stack AI trading platform with:
+Monnaire Trading Agent OS is a full-stack AI trading platform with:
 - **Backend:** Go (Gin framework, SQLite)
 - **Frontend:** React/TypeScript (Vite, TailwindCSS)
 - **Architecture:** Microservice-inspired modular design
@@ -18,7 +18,7 @@ NOFX is a full-stack AI trading platform with:
 ## 📁 Project Structure
 
 ```
-nofx/
+monnaire-trading-agent-os/
 ├── main.go                          # Program entry (multi-trader manager)
 ├── config.json                      # ~~Multi-trader config~~ (Now via web interface)
 ├── trading.db                       # SQLite database (traders, models, exchanges)

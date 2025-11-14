@@ -1,4 +1,4 @@
-# ⚡ NOFX 快速部署指南
+# ⚡ Monnaire Trading Agent OS 快速部署指南
 
 > **30分钟完成部署！** 🚀
 
@@ -151,7 +151,7 @@ go build
 ## 📝 环境变量清单
 
 ### 后端环境变量（Railway）
-- `NOFX_BACKEND_PORT=8080`
+- `MONNAIRE_BACKEND_PORT=8080`
 - `HYPERLIQUID_PRIVATE_KEY=xxx`
 - `BINANCE_API_KEY=xxx`
 - `DEEPSEEK_KEY=xxx`

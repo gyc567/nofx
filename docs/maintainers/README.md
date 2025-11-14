@@ -2,7 +2,7 @@
 
 **Language:** [English](README.md) | [中文](README.zh-CN.md)
 
-This directory contains documentation for NOFX project maintainers and contributors who want to understand our processes.
+This directory contains documentation for Monnaire Trading Agent OS project maintainers and contributors who want to understand our processes.
 
 ---
 

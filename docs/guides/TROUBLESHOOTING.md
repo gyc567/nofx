@@ -242,7 +242,7 @@ lsof -i :8080
 netstat -tulpn | grep 8080
 
 # Kill the process or change port in .env
-NOFX_BACKEND_PORT=8081
+MONNAIRE_BACKEND_PORT=8081
 ```
 
 ---
@@ -330,7 +330,7 @@ If errors persist after time sync:
    - Login to Binance → API Management
    - Delete old key
    - Create new key
-   - Update NOFX configuration
+   - Update Monnaire Trading Agent OS configuration
 
 **Solution 3: Check Rate Limits**
 
@@ -387,7 +387,7 @@ Binance has strict API rate limits:
 
 **Solution:**
 ```bash
-# Stop all NOFX processes
+# Stop all Monnaire Trading Agent OS processes
 docker compose down
 # OR
 pkill nofx

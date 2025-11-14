@@ -40,7 +40,7 @@
 - **平台**：Replit
 - **URL**：https://nofx-gyc567.replit.app
 - **状态**：Running
-- **服务**：NOFX AI Trading System
+- **服务**：Monnaire Trading Agent OS AI Trading System
 
 ---
 
@@ -215,7 +215,7 @@ vercel --prod --token=MCQEDyOzBmXhMMY5sANsKIya
 - **响应**：
   ```json
   {
-    "service": "NOFX AI Trading System",
+    "service": "Monnaire Trading Agent OS AI Trading System",
     "status": "ok"
   }
   ```

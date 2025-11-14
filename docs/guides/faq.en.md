@@ -6,19 +6,19 @@ Quick answers to common questions. For detailed troubleshooting, see [Troublesho
 
 ## General Questions
 
-### What is NOFX?
-NOFX is an AI-powered cryptocurrency trading bot that uses large language models (LLMs) to make trading decisions on futures markets.
+### What is Monnaire Trading Agent OS?
+Monnaire Trading Agent OS is an AI-powered cryptocurrency trading bot that uses large language models (LLMs) to make trading decisions on futures markets.
 
 ### Which exchanges are supported?
 - ✅ Binance Futures
 - ✅ Hyperliquid
 - 🚧 More exchanges coming soon
 
-### Is NOFX profitable?
+### Is Monnaire Trading Agent OS profitable?
 AI trading is **experimental** and **not guaranteed** to be profitable. Always start with small amounts and never invest more than you can afford to lose.
 
 ### Can I run multiple traders simultaneously?
-Yes! NOFX supports running multiple traders with different configurations, AI models, and trading strategies.
+Yes! Monnaire Trading Agent OS supports running multiple traders with different configurations, AI models, and trading strategies.
 
 ---
 
@@ -31,14 +31,14 @@ Yes! NOFX supports running multiple traders with different configurations, AI mo
 - **Network**: Stable internet connection
 
 ### Do I need coding experience?
-No! NOFX has a web UI for all configuration. However, basic command line knowledge helps with setup and troubleshooting.
+No! Monnaire Trading Agent OS has a web UI for all configuration. However, basic command line knowledge helps with setup and troubleshooting.
 
 ### How do I get API keys?
 1. **Binance**: Account → API Management → Create API → Enable Futures
 2. **Hyperliquid**: Visit [Hyperliquid App](https://app.hyperliquid.xyz/) → API Settings
 
 ### Should I use a subaccount?
-**Recommended**: Yes, use a subaccount dedicated to NOFX for better risk isolation. However, note that some subaccounts have restrictions (e.g., 5x max leverage on Binance).
+**Recommended**: Yes, use a subaccount dedicated to Monnaire Trading Agent OS for better risk isolation. However, note that some subaccounts have restrictions (e.g., 5x max leverage on Binance).
 
 ---
 
@@ -78,7 +78,7 @@ Default: **3 positions**. This is a soft limit defined in the AI prompt, not har
 3. Select **Position Mode** → **Hedge Mode**
 4. ⚠️ Close all positions first
 
-**Why**: NOFX uses `PositionSide(LONG/SHORT)` which requires Hedge Mode.
+**Why**: Monnaire Trading Agent OS uses `PositionSide(LONG/SHORT)` which requires Hedge Mode.
 
 See [Issue #202](https://github.com/tinkle-community/nofx/issues/202) and [Troubleshooting Guide](TROUBLESHOOTING.md#-only-opening-short-positions-issue-202).
 
@@ -92,7 +92,7 @@ See [Issue #202](https://github.com/tinkle-community/nofx/issues/202) and [Troub
 lsof -i :8080
 
 # Change port in .env
-NOFX_BACKEND_PORT=8081
+MONNAIRE_BACKEND_PORT=8081
 ```
 
 ---
@@ -115,7 +115,7 @@ If not, check [Troubleshooting Guide](TROUBLESHOOTING.md#-frontend-cant-connect-
 
 **Solution**:
 ```bash
-# Stop all NOFX processes
+# Stop all Monnaire Trading Agent OS processes
 docker compose down
 # OR
 pkill nofx
@@ -145,7 +145,7 @@ Depends on your model and decision frequency:
 Yes! Each trader can use a different AI model. You can even A/B test different models.
 
 ### Does the AI learn from its mistakes?
-Yes, to some extent. NOFX provides historical performance feedback in each decision prompt, allowing the AI to adjust its strategy.
+Yes, to some extent. Monnaire Trading Agent OS provides historical performance feedback in each decision prompt, allowing the AI to adjust its strategy.
 
 ---
 
@@ -191,7 +191,7 @@ See the comprehensive [Troubleshooting Guide](TROUBLESHOOTING.md) for:
 
 ## Contributing
 
-### Can I contribute to NOFX?
+### Can I contribute to Monnaire Trading Agent OS?
 Yes! We welcome contributions:
 - Bug fixes and features
 - Documentation improvements

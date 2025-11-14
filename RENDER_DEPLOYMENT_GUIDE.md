@@ -1,4 +1,4 @@
-# NOFX 后端部署到 Render 详细教程 👨‍💻
+# Monnaire Trading Agent OS 后端部署到 Render 详细教程 👨‍💻
 
 > **哥，这个文档是为新手小白准备的，一步一步跟着做就能成功部署！**
 
@@ -22,7 +22,7 @@
 
 ## 🎯 项目简介
 
-NOFX 是一个 **AI 驱动的加密货币交易系统**，包含：
+Monnaire Trading Agent OS 是一个 **AI 驱动的加密货币交易系统**，包含：
 
 - **后端**: Go 语言开发，提供 API 接口
 - **前端**: React + TypeScript，提供管理界面
@@ -121,8 +121,8 @@ cp config.json.example config.json
 1. 登录 GitHub: https://github.com
 2. 点击右上角 **"+"** → **"New repository"**
 3. 仓库信息:
-   - Repository name: `nofx-backend` （或任意名称）
-   - Description: `NOFX AI Trading System Backend`
+   - Repository name: `monnoire-backend` （或任意名称）
+   - Description: `Monnaire Trading Agent OS AI Trading System Backend`
    - 设置为 **Public** 或 **Private**
 4. 点击 **"Create repository"**
 
@@ -138,7 +138,7 @@ git init
 git add .
 
 # 提交
-git commit -m "Initial commit: NOFX backend code"
+git commit -m "Initial commit: Monnaire Trading Agent OS backend code"
 
 # 关联 GitHub 仓库（替换 YOUR_USERNAME 和 YOUR_REPO）
 git remote add origin https://github.com/YOUR_USERNAME/YOUR_REPO.git
@@ -171,7 +171,7 @@ git push -u origin main
 1. 选择 **"Build and deploy from a Git repository"**
 2. 点击 **"Connect"** 连接你的 GitHub
 3. 授权 Render 访问你的仓库
-4. 从列表中选择你的 NOFX 仓库
+4. 从列表中选择你的 Monnaire Trading Agent OS 仓库
 
 ---
 
@@ -183,7 +183,7 @@ git push -u origin main
 
 | 字段 | 值 |
 |------|-----|
-| **Name** | `nofx-backend` （或自定义） |
+| **Name** | `monnoire-backend` （或自定义） |
 | **Region** | 选择离你最近的区域 |
 | **Branch** | `main` |
 | **Root Directory** | 留空（因为在根目录） |
@@ -242,7 +242,7 @@ CGO_ENABLED=1 go build -o nofx main.go # 编译 Go 程序
 
 | Key | Value | 说明 |
 |-----|-------|------|
-| `NOFX_TIMEZONE` | `Asia/Shanghai` | 时区设置 |
+| `MONNAIRE_TIMEZONE` | `Asia/Shanghai` | 时区设置 |
 
 #### 6.3 添加自定义环境变量（可选）
 
@@ -300,7 +300,7 @@ mkdir -p decision_logs && \
 
 ### 步骤8: 配置健康检查
 
-Render 会自动检查应用是否正常运行。确保你的应用有 `/api/health` 端点（NOFX 已经包含）。
+Render 会自动检查应用是否正常运行。确保你的应用有 `/api/health` 端点（Monnaire Trading Agent OS 已经包含）。
 
 ---
 
@@ -330,7 +330,7 @@ Render 会自动检查应用是否正常运行。确保你的应用有 `/api/hea
 ### 访问测试
 
 构建完成后，Render 会提供一个 URL，格式如：
-`https://nofx-backend.onrender.com`
+`https://monnoire-backend.onrender.com`
 
 #### 测试 API
 
@@ -476,14 +476,14 @@ Render 免费版的限制：
 
 - **Render 官方文档**: https://render.com/docs
 - **Go on Render 指南**: https://render.com/docs/go
-- **NOFX 项目**: 本项目 GitHub 仓库
+- **Monnaire Trading Agent OS 项目**: 本项目 GitHub 仓库
 - **问题反馈**: 创建 GitHub Issue
 
 ---
 
 ## 🎉 部署完成！
 
-恭喜！你已经成功将 NOFX 后端部署到 Render。
+恭喜！你已经成功将 Monnaire Trading Agent OS 后端部署到 Render。
 
 **下一步**:
 1. 测试 API 功能
