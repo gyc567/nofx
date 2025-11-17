@@ -252,6 +252,10 @@ func (tm *TraderManager) addTraderFromDB(traderCfg *config.TraderRecord, aiModel
 		traderConfig.AsterUser = exchangeCfg.AsterUser
 		traderConfig.AsterSigner = exchangeCfg.AsterSigner
 		traderConfig.AsterPrivateKey = exchangeCfg.AsterPrivateKey
+	} else if exchangeCfg.ID == "okx" {
+		traderConfig.OKXAPIKey = exchangeCfg.APIKey
+		traderConfig.OKXSecretKey = exchangeCfg.SecretKey
+		traderConfig.OKXPassphrase = exchangeCfg.OKXPassphrase
 	}
 
 	// 根据AI模型设置API密钥
@@ -358,6 +362,10 @@ func (tm *TraderManager) AddTraderFromDB(traderCfg *config.TraderRecord, aiModel
 		traderConfig.AsterUser = exchangeCfg.AsterUser
 		traderConfig.AsterSigner = exchangeCfg.AsterSigner
 		traderConfig.AsterPrivateKey = exchangeCfg.AsterPrivateKey
+	} else if exchangeCfg.ID == "okx" {
+		traderConfig.OKXAPIKey = exchangeCfg.APIKey
+		traderConfig.OKXSecretKey = exchangeCfg.SecretKey
+		traderConfig.OKXPassphrase = exchangeCfg.OKXPassphrase
 	}
 
 	// 根据AI模型设置API密钥
@@ -902,6 +910,10 @@ func (tm *TraderManager) loadSingleTrader(traderCfg *config.TraderRecord, aiMode
 		traderConfig.AsterUser = exchangeCfg.AsterUser
 		traderConfig.AsterSigner = exchangeCfg.AsterSigner
 		traderConfig.AsterPrivateKey = exchangeCfg.AsterPrivateKey
+	} else if exchangeCfg.ID == "okx" {
+		traderConfig.OKXAPIKey = exchangeCfg.APIKey
+		traderConfig.OKXSecretKey = exchangeCfg.SecretKey
+		traderConfig.OKXPassphrase = exchangeCfg.OKXPassphrase
 	}
 
 	// 根据AI模型设置API密钥
