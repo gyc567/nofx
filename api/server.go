@@ -581,11 +581,25 @@ func (s *Server) handleStartTrader(c *gin.Context) {
                 c.JSON(http.StatusNotFound, gin.H{"error": "交易员不存在或无访问权限"})
                 return
         }
-        
+
+        // 尝试从traderManager获取trader实例
         trader, err := s.traderManager.GetTrader(traderID)
         if err != nil {
-                c.JSON(http.StatusNotFound, gin.H{"error": "交易员不存在"})
-                return
+                // 如果trader不在内存中，尝试从数据库加载该用户的trader
+                log.Printf("🔄 Trader %s 不在内存中，尝试加载...", traderID)
+                if loadErr := s.traderManager.LoadUserTraders(s.database, userID); loadErr != nil {
+                        log.Printf("❌ 加载trader失败: %v", loadErr)
+                        c.JSON(http.StatusInternalServerError, gin.H{"error": "加载trader失败"})
+                        return
+                }
+
+                // 再次尝试获取
+                trader, err = s.traderManager.GetTrader(traderID)
+                if err != nil {
+                        c.JSON(http.StatusNotFound, gin.H{"error": "交易员不存在"})
+                        return
+                }
+                log.Printf("✅ Trader %s 已加载到内存", traderID)
         }
 
         // 检查交易员是否已经在运行
@@ -639,11 +653,25 @@ func (s *Server) handleStopTrader(c *gin.Context) {
                 c.JSON(http.StatusNotFound, gin.H{"error": "交易员不存在或无访问权限"})
                 return
         }
-        
+
+        // 尝试从traderManager获取trader实例
         trader, err := s.traderManager.GetTrader(traderID)
         if err != nil {
-                c.JSON(http.StatusNotFound, gin.H{"error": "交易员不存在"})
-                return
+                // 如果trader不在内存中，尝试从数据库加载该用户的trader
+                log.Printf("🔄 Trader %s 不在内存中，尝试加载...", traderID)
+                if loadErr := s.traderManager.LoadUserTraders(s.database, userID); loadErr != nil {
+                        log.Printf("❌ 加载trader失败: %v", loadErr)
+                        c.JSON(http.StatusInternalServerError, gin.H{"error": "加载trader失败"})
+                        return
+                }
+
+                // 再次尝试获取
+                trader, err = s.traderManager.GetTrader(traderID)
+                if err != nil {
+                        c.JSON(http.StatusNotFound, gin.H{"error": "交易员不存在"})
+                        return
+                }
+                log.Printf("✅ Trader %s 已加载到内存", traderID)
         }
 
         // 检查交易员是否正在运行
