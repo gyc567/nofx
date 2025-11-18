@@ -814,6 +814,7 @@ export function AITradersPage({ onTraderSelect }: AITradersPageProps) {
       {/* Exchange Configuration Modal */}
       {showExchangeModal && (
         <ExchangeConfigModal
+          key={`${editingExchange || 'new'}-${Date.now()}`}
           allExchanges={supportedExchanges}
           editingExchangeId={editingExchange}
           onSave={handleSaveExchangeConfig}
@@ -1177,6 +1178,24 @@ function ExchangeConfigModal({
   // 获取当前编辑的交易所信息
   const selectedExchange = allExchanges?.find(e => e.id === selectedExchangeId);
 
+  // Debug logging for OKX input fields issue
+  console.log('[DEBUG ExchangeConfigModal]', {
+    selectedExchangeId,
+    selectedExchange: selectedExchange ? {
+      id: selectedExchange.id,
+      name: selectedExchange.name,
+      type: selectedExchange.type,
+      hasApiKey: !!selectedExchange.apiKey,
+      hasSecretKey: !!selectedExchange.secretKey,
+      hasOkxPassphrase: !!selectedExchange.okxPassphrase
+    } : null,
+    allExchangesCount: allExchanges?.length,
+    shouldShowCEXFields: (selectedExchange?.id === 'binance' || selectedExchange?.type === 'cex') &&
+      selectedExchange?.id !== 'hyperliquid' &&
+      selectedExchange?.id !== 'aster',
+    shouldShowPassphrase: selectedExchange?.id === 'okx'
+  });
+
   // 如果是编辑现有交易所，初始化表单数据
   useEffect(() => {
     if (editingExchangeId && selectedExchange) {
@@ -1288,7 +1307,7 @@ function ExchangeConfigModal({
           {selectedExchange && (
             <>
               {/* Binance 和其他 CEX 交易所的字段 */}
-              {(selectedExchange.id === 'binance' || selectedExchange.type === 'cex') && selectedExchange.id !== 'hyperliquid' && selectedExchange.id !== 'aster' && (
+              {(selectedExchange.type === 'cex') && selectedExchange.id !== 'hyperliquid' && selectedExchange.id !== 'aster' && (
                 <>
                   <div>
                     <label className="block text-sm font-semibold mb-2" style={{ color: '#EAECEF' }}>

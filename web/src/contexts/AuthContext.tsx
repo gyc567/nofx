@@ -1,5 +1,9 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { getSystemConfig } from '../lib/config';
+import { getApiBaseUrl } from '../lib/apiConfig';
+
+// 统一的 API 基础 URL
+const API_BASE = getApiBaseUrl();
 
 interface User {
   id: string;
@@ -62,11 +66,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const login = async (email: string, password: string) => {
     try {
-      // 使用环境变量或默认值构建API基础URL
-      const API_BASE = import.meta.env.DEV
-        ? '/api'
-        : (import.meta.env.VITE_API_URL || 'https://nofx-gyc567.replit.app') + '/api';
-
       const response = await fetch(`${API_BASE}/login`, {
         method: 'POST',
         headers: {
@@ -102,11 +101,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       if (betaCode) {
         requestBody.beta_code = betaCode;
       }
-
-      // 使用环境变量或默认值构建API基础URL
-      const API_BASE = import.meta.env.DEV
-        ? '/api'
-        : (import.meta.env.VITE_API_URL || 'https://nofx-gyc567.replit.app') + '/api';
 
       const response = await fetch(`${API_BASE}/register`, {
         method: 'POST',
@@ -150,10 +144,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const verifyOTP = async (userID: string, otpCode: string) => {
     try {
-      const API_BASE = import.meta.env.DEV
-        ? '/api'
-        : (import.meta.env.VITE_API_URL || 'https://nofx-gyc567.replit.app') + '/api';
-
       const response = await fetch(`${API_BASE}/verify-otp`, {
         method: 'POST',
         headers: {
@@ -187,9 +177,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const completeRegistration = async (userID: string, otpCode: string) => {
     try {
-      const API_BASE = import.meta.env.DEV
-        ? '/api'
-        : (import.meta.env.VITE_API_URL || 'https://nofx-gyc567.replit.app') + '/api';
 
       const response = await fetch(`${API_BASE}/complete-registration`, {
         method: 'POST',
@@ -224,9 +211,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const requestPasswordReset = async (email: string) => {
     try {
-      const API_BASE = import.meta.env.DEV
-        ? '/api'
-        : (import.meta.env.VITE_API_URL || 'https://nofx-gyc567.replit.app') + '/api';
 
       const response = await fetch(`${API_BASE}/request-password-reset`, {
         method: 'POST',
@@ -250,9 +234,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const resetPassword = async (token: string, password: string, otpCode: string) => {
     try {
-      const API_BASE = import.meta.env.DEV
-        ? '/api'
-        : (import.meta.env.VITE_API_URL || 'https://nofx-gyc567.replit.app') + '/api';
 
       const response = await fetch(`${API_BASE}/reset-password`, {
         method: 'POST',
