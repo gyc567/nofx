@@ -77,22 +77,23 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const data = await response.json();
 
       if (response.ok) {
-        if (data.requires_otp) {
-          return {
-            success: true,
-            userID: data.user_id,
-            requiresOTP: true,
-            message: data.message,
-          };
-        }
+        // 登录成功，保存token和用户信息
+        const userInfo = { id: data.user_id, email: data.email };
+        setToken(data.token);
+        setUser(userInfo);
+        localStorage.setItem('auth_token', data.token);
+        localStorage.setItem('auth_user', JSON.stringify(userInfo));
+
+        return {
+          success: true,
+          message: data.message,
+        };
       } else {
         return { success: false, message: data.error };
       }
     } catch (error) {
       return { success: false, message: '登录失败，请重试' };
     }
-
-    return { success: false, message: '未知错误' };
   };
 
   const register = async (email: string, password: string, betaCode?: string) => {
