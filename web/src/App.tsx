@@ -119,14 +119,14 @@ function App() {
   );
 
   const { data: account } = useSWR<AccountInfo>(
-    currentPage === 'trader' && selectedTraderId
-      ? `account-${selectedTraderId}`
-      : null,
+    selectedTraderId ? `account-${selectedTraderId}` : null,
     () => api.getAccount(selectedTraderId),
     {
       refreshInterval: 15000, // 15秒刷新（配合后端15秒缓存）
       revalidateOnFocus: false, // 禁用聚焦时重新验证，减少请求
       dedupingInterval: 10000, // 10秒去重，防止短时间内重复请求
+      onError: (err) => console.error('❌ Account API error:', err),
+      onSuccess: (data) => console.log('✅ Account data loaded:', data?.total_equity)
     }
   );
 
