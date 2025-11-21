@@ -24,6 +24,13 @@ export function CompetitionPage() {
     }
   );
 
+  // 添加这行调试代码
+  console.log('🔍 Debug - Competition data:', competition);
+  console.log('🔍 Debug - Traders:', competition?.traders);
+  if (competition?.traders?.[0]) {
+    console.log('🔍 Debug - TopTrader equity:', competition.traders[0].total_equity);
+  }
+
   const handleTraderClick = async (traderId: string) => {
     try {
       const traderConfig = await api.getTraderConfig(traderId);
