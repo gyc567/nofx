@@ -21,16 +21,20 @@ export function LoginPage() {
     setLoading(true);
 
     const result = await login(email, password);
-    
+
     if (result.success) {
       if (result.requiresOTP && result.userID) {
         setUserID(result.userID);
         setStep('otp');
+      } else {
+        // 登录成功且不需要OTP，跳转到首页
+        window.history.pushState({}, '', '/competition');
+        window.dispatchEvent(new PopStateEvent('popstate'));
       }
     } else {
       setError(result.message || t('loginFailed', language));
     }
-    
+
     setLoading(false);
   };
 
