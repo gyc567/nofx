@@ -27,12 +27,25 @@ export default defineConfig(({ mode }) => {
       rollupOptions: {
         output: {
           manualChunks: {
-            vendor: ['react', 'react-dom'],
-            charts: ['recharts'],
-            utils: ['swr', 'zustand', 'date-fns'],
+            // React核心（必须）
+            'react-vendor': ['react', 'react-dom'],
+
+            // 图表库（最大优化点 - 407kB）
+            'charts-vendor': ['recharts'],
+
+            // UI组件库
+            'ui-vendor': ['lucide-react', 'framer-motion'],
+
+            // 状态管理和数据获取
+            'state-vendor': ['swr', 'zustand'],
+
+            // 工具库
+            'utils-vendor': ['date-fns', 'clsx', 'tailwind-merge'],
           },
         },
       },
+      // 增加警告阈值但仍然提醒大文件
+      chunkSizeWarningLimit: 800,
     },
     define: {
       // 确保环境变量可用
