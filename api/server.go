@@ -9,6 +9,7 @@ import (
         "nofx/config"
         "nofx/decision"
         "nofx/manager"
+        "os"
         "strconv"
         "strings"
         "time"
@@ -50,8 +51,40 @@ func NewServer(traderManager *manager.TraderManager, database *config.Database, 
 
 // corsMiddleware CORS中间件
 func corsMiddleware() gin.HandlerFunc {
+        // 从环境变量获取允许的域名列表，默认为开发环境域名
+        allowedOrigins := []string{
+                "http://localhost:3000",
+                "http://localhost:5173",
+                "http://127.0.0.1:3000",
+                "http://127.0.0.1:5173",
+        }
+
+        // 如果设置了环境变量，使用环境变量中的值
+        if envOrigins := os.Getenv("ALLOWED_ORIGINS"); envOrigins != "" {
+                allowedOrigins = strings.Split(envOrigins, ",")
+                for i := range allowedOrigins {
+                        allowedOrigins[i] = strings.TrimSpace(allowedOrigins[i])
+                }
+        }
+
         return func(c *gin.Context) {
-                c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
+                origin := c.Request.Header.Get("Origin")
+
+                // 检查origin是否在白名单中
+                allowed := false
+                for _, allowedOrigin := range allowedOrigins {
+                        if origin == allowedOrigin {
+                                allowed = true
+                                break
+                        }
+                }
+
+                // 仅对白名单域名设置CORS头
+                if allowed {
+                        c.Writer.Header().Set("Access-Control-Allow-Origin", origin)
+                        c.Writer.Header().Set("Access-Control-Allow-Credentials", "true")
+                }
+
                 c.Writer.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
                 c.Writer.Header().Set("Access-Control-Allow-Headers",
                         "Content-Type, Authorization, Cache-Control, X-Requested-With, X-Requested-By, If-Modified-Since, Pragma")
@@ -1350,16 +1383,6 @@ func (s *Server) handleRegister(c *gin.Context) {
                         "success": false,
                         "error":   "密码处理失败",
                         "details": "服务器内部错误，请稍后重试",
-                })
-                return
-        }
-
-        // 验证密码强度
-        if len(req.Password) < 8 {
-                c.JSON(http.StatusBadRequest, gin.H{
-                        "success": false,
-                        "error":   "密码强度不够",
-                        "details": "密码必须至少包含8个字符",
                 })
                 return
         }

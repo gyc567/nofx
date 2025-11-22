@@ -36,8 +36,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     if (savedToken && savedUser) {
       try {
-        setToken(savedToken);
-        setUser(JSON.parse(savedUser));
+        // 验证JWT token的有效性
+        if (isValidToken(savedToken)) {
+          setToken(savedToken);
+          setUser(JSON.parse(savedUser));
+        } else {
+          console.warn('Stored token is invalid or expired');
+          // 清除无效数据
+          localStorage.removeItem('auth_token');
+          localStorage.removeItem('auth_user');
+        }
       } catch (error) {
         console.error('Failed to parse saved user data:', error);
         // 清除无效数据
@@ -47,6 +55,31 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
     setIsLoading(false);
   }, []);
+
+  // 辅助函数：验证JWT token格式和过期时间
+  const isValidToken = (token: string): boolean => {
+    try {
+      // JWT格式: header.payload.signature
+      const parts = token.split('.');
+      if (parts.length !== 3) {
+        return false;
+      }
+
+      // 解析payload (base64解码)
+      const payload = JSON.parse(atob(parts[1]));
+
+      // 检查过期时间
+      if (payload.exp && Date.now() >= payload.exp * 1000) {
+        console.log('Token expired');
+        return false;
+      }
+
+      return true;
+    } catch (error) {
+      console.error('Token validation error:', error);
+      return false;
+    }
+  };
 
   const login = async (email: string, password: string) => {
     try {
