@@ -1313,9 +1313,21 @@ func (s *Server) authMiddleware() gin.HandlerFunc {
                         return
                 }
 
-                // 将用户信息存储到上下文中
+                // 获取完整的用户信息
+                user, err := s.database.GetUserByID(claims.UserID)
+                if err != nil {
+                        log.Printf("获取用户信息失败: %v", err)
+                        c.JSON(http.StatusUnauthorized, gin.H{
+                                "error": "无效的用户",
+                        })
+                        c.Abort()
+                        return
+                }
+
+                // 将完整的用户对象存储到上下文中
+                c.Set("user", user)
+                // 为了向后兼容，同时保留user_id
                 c.Set("user_id", claims.UserID)
-                c.Set("email", claims.Email)
                 c.Next()
         }
 }
