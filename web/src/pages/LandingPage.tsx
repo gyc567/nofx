@@ -5,7 +5,6 @@ import HeaderBar from '../components/landing/HeaderBar'
 import HeroSection from '../components/landing/HeroSection'
 import AboutSection from '../components/landing/AboutSection'
 import FeaturesSection from '../components/landing/FeaturesSection'
-import HowItWorksSection from '../components/landing/HowItWorksSection'
 import CommunitySection from '../components/landing/CommunitySection'
 import AnimatedSection from '../components/landing/AnimatedSection'
 import LoginModal from '../components/landing/LoginModal'
@@ -46,7 +45,6 @@ export function LandingPage() {
       <HeroSection language={language} />
       <AboutSection language={language} />
       <FeaturesSection language={language} />
-      <HowItWorksSection language={language} />
       <CommunitySection />
 
       {/* CTA */}
