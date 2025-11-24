@@ -327,7 +327,7 @@ export const translations = {
 
     // Landing Page
     features: 'Features',
-    howItWorks: 'How it Works',
+    howItWorks: 'User Manual',
     community: 'Community',
     language: 'Language',
     loggedInAs: 'Logged in as',
@@ -740,7 +740,7 @@ export const translations = {
 
     // Landing Page
     features: '功能',
-    howItWorks: '如何运作',
+    howItWorks: '用户手册',
     community: '社区',
     language: '语言',
     loggedInAs: '已登录为',

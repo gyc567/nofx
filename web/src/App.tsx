@@ -8,6 +8,7 @@ import { RegisterPage } from './components/RegisterPage';
 import { ResetPasswordPage } from './components/ResetPasswordPage';
 import { CompetitionPage } from './components/CompetitionPage';
 import { LandingPage } from './pages/LandingPage';
+import { UserManualPage } from './components/UserManualPage';
 import HeaderBar from './components/landing/HeaderBar';
 import AILearning from './components/AILearning';
 import { LanguageProvider, useLanguage } from './contexts/LanguageContext';
@@ -214,6 +215,10 @@ function App() {
   }
   if (route === '/reset-password') {
     return <ResetPasswordPage />;
+  }
+  // User Manual route
+  if (route === '/user-manual' || route === '/user-manual/zh' || route === '/user-manual/en') {
+    return <UserManualPage />;
   }
   if (route === '/competition') {
     return (
