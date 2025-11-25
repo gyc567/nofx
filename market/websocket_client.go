@@ -11,11 +11,12 @@ import (
 )
 
 type WSClient struct {
-	conn        *websocket.Conn
-	mu          sync.RWMutex
-	subscribers map[string]chan []byte
-	reconnect   bool
-	done        chan struct{}
+	conn             *websocket.Conn
+	mu               sync.RWMutex
+	subscribers      map[string]chan []byte
+	subscribedStreams []string // 已订阅的流列表，用于重连恢复
+	reconnect        bool
+	done             chan struct{}
 }
 
 type WSMessage struct {
@@ -70,9 +71,10 @@ type TickerWSData struct {
 
 func NewWSClient() *WSClient {
 	return &WSClient{
-		subscribers: make(map[string]chan []byte),
-		reconnect:   true,
-		done:        make(chan struct{}),
+		subscribers:       make(map[string]chan []byte),
+		subscribedStreams: make([]string, 0),
+		reconnect:         true,
+		done:              make(chan struct{}),
 	}
 }
 
@@ -183,24 +185,115 @@ func (w *WSClient) handleMessage(message []byte) {
 	}
 }
 
+// handleReconnect 处理重连逻辑，使用退避重连策略
 func (w *WSClient) handleReconnect() {
 	if !w.reconnect {
 		return
 	}
 
-	log.Println("尝试重新连接...")
-	time.Sleep(3 * time.Second)
+	maxBackoff := 60 * time.Second
+	backoff := 3 * time.Second
+	retryCount := 0
 
-	if err := w.Connect(); err != nil {
-		log.Printf("重新连接失败: %v", err)
-		go w.handleReconnect()
+	for {
+		retryCount++
+		log.Printf("WebSocket尝试重新连接 (第 %d 次)...", retryCount)
+
+		if err := w.Connect(); err == nil {
+			log.Println("✅ WebSocket重连成功，开始恢复订阅...")
+			w.resubscribeAll()
+			return
+		}
+
+		log.Printf("❌ WebSocket重连失败: %v", err)
+		log.Printf("⏳ 等待 %v 后重试...", backoff)
+		time.Sleep(backoff)
+
+		// 指数退避，但不超过最大值
+		backoff = backoff * 2
+		if backoff > maxBackoff {
+			backoff = maxBackoff
+			log.Println("⚠️ 达到最大退避时间，使用固定间隔重试")
+		}
+
+		// 检查是否应该退出重连循环
+		select {
+		case <-w.done:
+			log.Println("🔚 收到退出信号，停止重连")
+			return
+		default:
+			// 继续重试
+		}
 	}
+}
+
+// resubscribeAll 重新订阅所有已订阅的流
+func (w *WSClient) resubscribeAll() {
+	w.mu.RLock()
+	streams := make([]string, len(w.subscribedStreams))
+	copy(streams, w.subscribedStreams)
+	w.mu.RUnlock()
+
+	if len(streams) == 0 {
+		log.Println("⚠️ 没有已订阅的流需要恢复")
+		return
+	}
+
+	log.Printf("🔄 重新订阅 %d 个流...", len(streams))
+	successCount := 0
+	failCount := 0
+
+	for _, stream := range streams {
+		if err := w.subscribeStream(stream); err != nil {
+			log.Printf("❌ 重新订阅流 %s 失败: %v", stream, err)
+			failCount++
+		} else {
+			successCount++
+			log.Printf("  ✅ 重新订阅成功: %s", stream)
+			// 短暂延迟避免请求过快
+			time.Sleep(50 * time.Millisecond)
+		}
+	}
+
+	log.Printf("📊 重订阅完成: %d 成功, %d 失败", successCount, failCount)
+	if failCount > 0 {
+		log.Printf("⚠️ 部分流订阅失败，可能需要手动检查网络连接")
+	}
+}
+
+// subscribeStream 订阅单个流
+func (w *WSClient) subscribeStream(stream string) error {
+	subscribeMsg := map[string]interface{}{
+		"method": "SUBSCRIBE",
+		"params": []string{stream},
+		"id":     time.Now().UnixNano(),
+	}
+
+	w.mu.RLock()
+	defer w.mu.RUnlock()
+
+	if w.conn == nil {
+		return fmt.Errorf("WebSocket未连接")
+	}
+
+	return w.conn.WriteJSON(subscribeMsg)
 }
 
 func (w *WSClient) AddSubscriber(stream string, bufferSize int) <-chan []byte {
 	ch := make(chan []byte, bufferSize)
 	w.mu.Lock()
 	w.subscribers[stream] = ch
+	// 检查是否已经订阅，避免重复
+	exists := false
+	for _, s := range w.subscribedStreams {
+		if s == stream {
+			exists = true
+			break
+		}
+	}
+	if !exists {
+		w.subscribedStreams = append(w.subscribedStreams, stream)
+	}
 	w.mu.Unlock()
 	return ch
 }
