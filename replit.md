@@ -1,36 +1,41 @@
 # Monnaire Trading Agent OS AI Trading System - Replit Deployment
 
 ## Project Overview
-Monnaire Trading Agent OS is an AI-powered cryptocurrency trading system with support for multiple AI models (DeepSeek, Qwen) and exchanges (Binance, Hyperliquid, Aster DEX). This is a full-stack application with a Go backend and React/Vite frontend.
+Monnaire Trading Agent OS is an AI-powered cryptocurrency trading system with support for multiple AI models (DeepSeek, Qwen) and exchanges (OKX, Hyperliquid, Aster DEX). This is a full-stack application with a Go backend and React/Vite frontend.
 
-## Recent Changes (November 11, 2025)
-- ✅ Migrated from Vercel to Replit
-- ✅ Configured Vite to run on port 5000 (required for Replit webview)
-- ✅ Built Go backend binary for faster startup
-- ✅ Created unified workflow running both backend and frontend
+## Recent Changes (November 25, 2025)
+- ✅ **Migrated database from SQLite to Neon PostgreSQL cloud**
+- ✅ **Dual database support with automatic SQL syntax conversion**
+- ✅ **Fixed PostgreSQL compatibility (placeholder conversion ? → $1, $2)**
+- ✅ **Fixed COALESCE type matching for PostgreSQL BOOLEAN fields**
+- ✅ **Admin user creation working with PostgreSQL**
+- ✅ **All configuration synced to Neon cloud database**
+- ✅ OKX exchange support (Binance unavailable in US region)
 - ✅ Frontend runs on port 5000, backend API on port 8080
 - ✅ Admin mode enabled by default (no login required for testing)
-- ✅ **Deployment configured for Replit (Reserved VM)**
-- ✅ **Backend uses PORT environment variable (tested with PORT=9999)**
-- ✅ **Health check endpoint at `/` with 2ms response time**
-- ✅ **Backend binds to 0.0.0.0 for external access (verified)**
-- ✅ **Market data initialization moved to background (non-blocking)**
-- ✅ **Backend-only deployment (no frontend build)**
-- ✅ **All deployment health check fixes applied and verified locally**
+- ✅ Deployment configured for Replit (Reserved VM)
 
 ## Architecture
 
 ### Backend (Go)
 - **Port**: Uses `PORT` environment variable (defaults to 8080 in dev)
-- **Binary**: `monnoire-backend` (pre-compiled)
-- **Database**: SQLite (`config.db`)
+- **Binary**: `nofx-backend` (compiled from source)
+- **Database**: Neon PostgreSQL cloud (primary) + SQLite fallback
 - **Features**:
   - REST API for trader management
   - WebSocket for real-time crypto market data
-  - Support for Binance, Hyperliquid, Aster exchanges
+  - Support for OKX, Hyperliquid, Aster exchanges
   - AI integration with DeepSeek, Qwen, and custom APIs
   - **Serves built frontend in production**
   - **Automatically uses Replit's PORT variable in production**
+
+### Database Configuration
+- **Primary**: Neon PostgreSQL (DATABASE_URL environment variable)
+- **Fallback**: SQLite (`config.db`) if USE_NEON=false
+- **Environment Variables**:
+  - `USE_NEON=true` - Enable Neon PostgreSQL
+  - `DATABASE_URL` - Neon connection string
+  - `SQLITE_PATH` - SQLite database path (optional)
 
 ### Frontend (React + Vite)
 - **Development Port**: 5000 (exposed for Replit webview)
