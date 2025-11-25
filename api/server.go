@@ -1,6 +1,7 @@
 package api
 
 import (
+        "database/sql"
         "encoding/json"
         "fmt"
         "log"
@@ -1406,6 +1407,15 @@ func (s *Server) handleRegister(c *gin.Context) {
                         "success": false,
                         "error":   "邮箱已被注册",
                         "details": "该邮箱地址已经注册，请使用其他邮箱或尝试登录",
+                })
+                return
+        }
+        if err != sql.ErrNoRows {
+                // 数据库查询失败，不是用户不存在的错误
+                c.JSON(http.StatusInternalServerError, gin.H{
+                        "success": false,
+                        "error":   "系统错误",
+                        "details": "服务器内部错误，请稍后重试",
                 })
                 return
         }
