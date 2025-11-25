@@ -73,6 +73,9 @@ func corsMiddleware() gin.HandlerFunc {
                 "https://web-fej4rs4y2-gyc567s-projects.vercel.app",
                 "https://web-fco5upt1e-gyc567s-projects.vercel.app",
                 "https://web-2ybunmaej-gyc567s-projects.vercel.app",
+
+                // 新增生产前端域名
+                "https://www.agentrade.xyz",
         }
 
         // 如果设置了环境变量，使用环境变量中的值
