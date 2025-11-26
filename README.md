@@ -375,7 +375,7 @@ sudo apt-get install libta-lib0-dev
 ### 2. Clone the Project
 
 ```bash
-git clone https://github.com/tinkle-community/nofx.git
+git clone https://github.com/gyc567/nofx.git
 cd nofx
 ```
 
@@ -1284,7 +1284,7 @@ We welcome contributions from the community! See our comprehensive guides:
 
 
 ### 🐛 Technical Support
-- **GitHub Issues**: [Submit an Issue](https://github.com/tinkle-community/nofx/issues)
+- **GitHub Issues**: [Submit an Issue](https://github.com/gyc567/nofx/issues)
 - **Developer Community**: [Telegram Group](https://t.me/nofx_dev_community)
 
 ---

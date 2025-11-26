@@ -196,7 +196,7 @@ Monnaire Trading Agent OS 项目的所有重要更改都将记录在此文件中
 - [文档](docs/README.md)
 - [贡献指南](CONTRIBUTING.md)
 - [安全策略](SECURITY.md)
-- [GitHub 仓库](https://github.com/tinkle-community/nofx)
+- [GitHub 仓库](https://github.com/gyc567/nofx)
 
 ---
 

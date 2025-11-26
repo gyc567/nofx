@@ -80,7 +80,7 @@ Default: **3 positions**. This is a soft limit defined in the AI prompt, not har
 
 **Why**: Monnaire Trading Agent OS uses `PositionSide(LONG/SHORT)` which requires Hedge Mode.
 
-See [Issue #202](https://github.com/tinkle-community/nofx/issues/202) and [Troubleshooting Guide](TROUBLESHOOTING.md#-only-opening-short-positions-issue-202).
+See [Issue #202](https://github.com/gyc567/nofx/issues/202) and [Troubleshooting Guide](TROUBLESHOOTING.md#-only-opening-short-positions-issue-202).
 
 ---
 
@@ -179,13 +179,13 @@ See the comprehensive [Troubleshooting Guide](TROUBLESHOOTING.md) for:
 
 ### How do I report a bug?
 1. Check [Troubleshooting Guide](TROUBLESHOOTING.md) first
-2. Search [existing issues](https://github.com/tinkle-community/nofx/issues)
+2. Search [existing issues](https://github.com/gyc567/nofx/issues)
 3. If not found, use our [Bug Report Template](../../.github/ISSUE_TEMPLATE/bug_report.md)
 
 ### Where can I get help?
-- [GitHub Discussions](https://github.com/tinkle-community/nofx/discussions)
+- [GitHub Discussions](https://github.com/gyc567/nofx/discussions)
 - [Telegram Community](https://t.me/nofx_dev_community)
-- [GitHub Issues](https://github.com/tinkle-community/nofx/issues)
+- [GitHub Issues](https://github.com/gyc567/nofx/issues)
 
 ---
 
@@ -199,7 +199,7 @@ Yes! We welcome contributions:
 - See [Contributing Guide](../CONTRIBUTING.md)
 
 ### How do I suggest new features?
-Open a [Feature Request](https://github.com/tinkle-community/nofx/issues/new/choose) with your idea!
+Open a [Feature Request](https://github.com/gyc567/nofx/issues/new/choose) with your idea!
 
 ---
 

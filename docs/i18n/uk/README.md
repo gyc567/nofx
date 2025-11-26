@@ -353,7 +353,7 @@ sudo apt-get install libta-lib0-dev
 ### 2. Клонування проєкту
 
 ```bash
-git clone https://github.com/tinkle-community/nofx.git
+git clone https://github.com/gyc567/nofx.git
 cd nofx
 ```
 

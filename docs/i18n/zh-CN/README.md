@@ -1283,7 +1283,7 @@ MIT License - 详见 [LICENSE](LICENSE) 文件
 ## 📬 联系方式
 
 ### 🐛 技术支持
-- **GitHub Issues**: [提交Issue](https://github.com/tinkle-community/nofx/issues)
+- **GitHub Issues**: [提交Issue](https://github.com/gyc567/nofx/issues)
 - **开发者社区**: [Telegram群组](https://t.me/nofx_dev_community)
 
 ---

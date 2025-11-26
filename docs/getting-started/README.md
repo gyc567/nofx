@@ -120,7 +120,7 @@ After deployment:
 **Need more help?**
 - 📖 [FAQ](../guides/faq.zh-CN.md)
 - 💬 [Telegram Community](https://t.me/nofx_dev_community)
-- 🐛 [GitHub Issues](https://github.com/tinkle-community/nofx/issues)
+- 🐛 [GitHub Issues](https://github.com/gyc567/nofx/issues)
 
 ---
 

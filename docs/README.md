@@ -61,7 +61,7 @@ Welcome to the Monnaire Trading Agent OS documentation! This page helps you find
 **Get Involved:**
 - 💬 [Telegram Community](https://t.me/nofx_dev_community)
 - 🐦 [Twitter @monnaire_ai](https://x.com/monnai_ai)
-- 🐛 [Report Issues](https://github.com/tinkle-community/nofx/issues)
+- 🐛 [Report Issues](https://github.com/gyc567/nofx/issues)
 
 ---
 
@@ -125,8 +125,8 @@ Welcome to the Monnaire Trading Agent OS documentation! This page helps you find
 
 ### I want to...
 - 🚀 **Get started quickly** → [Getting Started](getting-started/README.md) / [快速开始](getting-started/README.zh-CN.md)
-- 🐛 **Report a bug** → [GitHub Issues](https://github.com/tinkle-community/nofx/issues/new)
-- 💡 **Suggest a feature** → [Feature Request](https://github.com/tinkle-community/nofx/issues/new?template=feature_request.md)
+- 🐛 **Report a bug** → [GitHub Issues](https://github.com/gyc567/nofx/issues/new)
+- 💡 **Suggest a feature** → [Feature Request](https://github.com/gyc567/nofx/issues/new?template=feature_request.md)
 - 🔒 **Report security issue** → [Security Policy](../SECURITY.md)
 - 💰 **Claim a bounty** → [Bounty Guide](community/bounty-guide.md)
 - 🤝 **Contribute code** → [Contributing Guide](../CONTRIBUTING.md)
@@ -168,7 +168,7 @@ Welcome to the Monnaire Trading Agent OS documentation! This page helps you find
 1. **Search GitHub Issues** - Someone might have asked already
 2. **Join Telegram** - [Monnaire Trading Agent OS Developer Community](https://t.me/nofx_dev_community)
 3. **Ask on Twitter** - Mention [@monnaire_ai](https://x.com/monnai_ai)
-4. **Create an Issue** - [New Issue](https://github.com/tinkle-community/nofx/issues/new)
+4. **Create an Issue** - [New Issue](https://github.com/gyc567/nofx/issues/new)
 
 ---
 

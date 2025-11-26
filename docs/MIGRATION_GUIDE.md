@@ -227,7 +227,7 @@ Closes #XXX
 3. Ask in [Telegram](https://t.me/nofx_dev_community)
 
 **Link broken?**
-- Report in [GitHub Issues](https://github.com/tinkle-community/nofx/issues)
+- Report in [GitHub Issues](https://github.com/gyc567/nofx/issues)
 - We'll fix it ASAP!
 
 **Want to contribute docs?**

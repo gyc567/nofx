@@ -34,7 +34,7 @@ export default function FooterSection({ language }: FooterSectionProps) {
               <li>
                 <a
                   className='hover:text-[#F0B90B]'
-                  href='https://github.com/tinkle-community/nofx'
+                  href='https://github.com/gyc567/nofx'
                   target='_blank'
                   rel='noopener noreferrer'
                 >
@@ -75,7 +75,7 @@ export default function FooterSection({ language }: FooterSectionProps) {
               <li>
                 <a
                   className='hover:text-[#F0B90B]'
-                  href='https://github.com/tinkle-community/nofx/blob/main/README.md'
+                  href='https://github.com/gyc567/nofx/blob/main/README.md'
                   target='_blank'
                   rel='noopener noreferrer'
                 >
@@ -85,7 +85,7 @@ export default function FooterSection({ language }: FooterSectionProps) {
               <li>
                 <a
                   className='hover:text-[#F0B90B]'
-                  href='https://github.com/tinkle-community/nofx/issues'
+                  href='https://github.com/gyc567/nofx/issues'
                   target='_blank'
                   rel='noopener noreferrer'
                 >
@@ -95,7 +95,7 @@ export default function FooterSection({ language }: FooterSectionProps) {
               <li>
                 <a
                   className='hover:text-[#F0B90B]'
-                  href='https://github.com/tinkle-community/nofx/pulls'
+                  href='https://github.com/gyc567/nofx/pulls'
                   target='_blank'
                   rel='noopener noreferrer'
                 >
