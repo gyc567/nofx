@@ -195,6 +195,99 @@ func (t *OKXTrader) parsePositions(resp map[string]interface{}) []map[string]int
         return positions
 }
 
+// getContractValue 获取合约面值(ctVal)
+// OKX永续合约的sz参数是合约张数，需要用币数量除以合约面值来转换
+func (t *OKXTrader) getContractValue(instId string) (float64, float64, error) {
+        // 获取合约规格
+        endpoint := "/api/v5/public/instruments"
+        params := map[string]string{
+                "instType": "SWAP",
+                "instId":   instId,
+        }
+
+        resp, err := t.makeRequest("GET", endpoint, params)
+        if err != nil {
+                // 如果获取失败，返回默认值
+                log.Printf("⚠️ 获取合约规格失败: %v，使用默认值", err)
+                return getDefaultContractValue(instId)
+        }
+
+        if data, ok := resp["data"].([]interface{}); ok && len(data) > 0 {
+                if inst, ok := data[0].(map[string]interface{}); ok {
+                        ctVal := 1.0
+                        minSz := 0.01
+                        lotSz := 0.01
+                        
+                        if ctValStr, ok := inst["ctVal"].(string); ok {
+                                if v, err := strconv.ParseFloat(ctValStr, 64); err == nil {
+                                        ctVal = v
+                                }
+                        }
+                        if minSzStr, ok := inst["minSz"].(string); ok {
+                                if v, err := strconv.ParseFloat(minSzStr, 64); err == nil {
+                                        minSz = v
+                                }
+                        }
+                        if lotSzStr, ok := inst["lotSz"].(string); ok {
+                                if v, err := strconv.ParseFloat(lotSzStr, 64); err == nil {
+                                        lotSz = v
+                                }
+                        }
+                        
+                        log.Printf("📋 合约规格 %s: ctVal=%.4f, minSz=%.4f, lotSz=%.4f", instId, ctVal, minSz, lotSz)
+                        return ctVal, minSz, nil
+                }
+        }
+
+        return getDefaultContractValue(instId)
+}
+
+// getDefaultContractValue 返回默认的合约面值
+func getDefaultContractValue(instId string) (float64, float64, error) {
+        // 常见合约的默认面值
+        defaults := map[string]float64{
+                "BTC-USDT-SWAP":  0.01,    // 1张 = 0.01 BTC
+                "ETH-USDT-SWAP":  0.1,     // 1张 = 0.1 ETH
+                "SOL-USDT-SWAP":  1.0,     // 1张 = 1 SOL
+                "DOGE-USDT-SWAP": 1000.0,  // 1张 = 1000 DOGE
+                "XRP-USDT-SWAP":  100.0,   // 1张 = 100 XRP
+                "BNB-USDT-SWAP":  0.1,     // 1张 = 0.1 BNB
+                "ADA-USDT-SWAP":  100.0,   // 1张 = 100 ADA
+                "HYPE-USDT-SWAP": 1.0,     // 1张 = 1 HYPE (估计值)
+        }
+        
+        if ctVal, ok := defaults[instId]; ok {
+                return ctVal, 0.01, nil
+        }
+        
+        // 默认返回1.0
+        return 1.0, 0.01, nil
+}
+
+// convertToContractSize 将币数量转换为合约张数
+func (t *OKXTrader) convertToContractSize(instId string, coinAmount float64) (string, error) {
+        ctVal, minSz, err := t.getContractValue(instId)
+        if err != nil {
+                return "", err
+        }
+        
+        // 合约张数 = 币数量 / 合约面值
+        contractSize := coinAmount / ctVal
+        
+        // 向下取整到lotSz精度(0.01)
+        contractSize = float64(int(contractSize*100)) / 100
+        
+        // 确保至少达到最小下单量
+        if contractSize < minSz {
+                contractSize = minSz
+        }
+        
+        log.Printf("📊 数量转换: 币数量=%.6f, 合约面值=%.6f, 合约张数=%.2f", coinAmount, ctVal, contractSize)
+        
+        // 格式化为字符串，保留2位小数
+        return fmt.Sprintf("%.2f", contractSize), nil
+}
+
 // OpenLong 开多仓
 func (t *OKXTrader) OpenLong(symbol string, quantity float64, leverage int) (map[string]interface{}, error) {
         if quantity <= 0 {
@@ -203,11 +296,17 @@ func (t *OKXTrader) OpenLong(symbol string, quantity float64, leverage int) (map
 
         // 转换交易对格式: BTCUSDT -> BTC-USDT-SWAP
         okxSymbol := convertToOKXSymbol(symbol)
-        log.Printf("📊 OKX开多: 原始交易对=%s, OKX格式=%s, 数量=%f, 杠杆=%d", symbol, okxSymbol, quantity, leverage)
+        log.Printf("📊 OKX开多: 原始交易对=%s, OKX格式=%s, 币数量=%f, 杠杆=%d", symbol, okxSymbol, quantity, leverage)
 
         // 设置杠杆（OKX要求先设置杠杆）
         if err := t.SetLeverage(okxSymbol, leverage); err != nil {
                 log.Printf("⚠️ 设置杠杆失败: %v", err)
+        }
+
+        // 将币数量转换为合约张数
+        contractSize, err := t.convertToContractSize(okxSymbol, quantity)
+        if err != nil {
+                return nil, fmt.Errorf("转换合约张数失败: %w", err)
         }
 
         order := map[string]string{
@@ -216,7 +315,7 @@ func (t *OKXTrader) OpenLong(symbol string, quantity float64, leverage int) (map
                 "side":    "buy",            // 订单方向：buy(买入开多)
                 "posSide": "long",           // 仓位方向：long(多头) - OKX多空模式必须
                 "ordType": "market",         // 订单类型：market(市价)
-                "sz":      strconv.FormatFloat(quantity, 'f', -1, 64), // 委托数量
+                "sz":      contractSize,     // 合约张数（不是币数量）
         }
 
         return t.placeOrder(order)
@@ -230,11 +329,17 @@ func (t *OKXTrader) OpenShort(symbol string, quantity float64, leverage int) (ma
 
         // 转换交易对格式
         okxSymbol := convertToOKXSymbol(symbol)
-        log.Printf("📊 OKX开空: 原始交易对=%s, OKX格式=%s, 数量=%f, 杠杆=%d", symbol, okxSymbol, quantity, leverage)
+        log.Printf("📊 OKX开空: 原始交易对=%s, OKX格式=%s, 币数量=%f, 杠杆=%d", symbol, okxSymbol, quantity, leverage)
 
         // 设置杠杆（OKX要求先设置杠杆）
         if err := t.SetLeverage(okxSymbol, leverage); err != nil {
                 log.Printf("⚠️ 设置杠杆失败: %v", err)
+        }
+
+        // 将币数量转换为合约张数
+        contractSize, err := t.convertToContractSize(okxSymbol, quantity)
+        if err != nil {
+                return nil, fmt.Errorf("转换合约张数失败: %w", err)
         }
 
         order := map[string]string{
@@ -243,7 +348,7 @@ func (t *OKXTrader) OpenShort(symbol string, quantity float64, leverage int) (ma
                 "side":    "sell",           // 卖出开空
                 "posSide": "short",          // 仓位方向：short(空头) - OKX多空模式必须
                 "ordType": "market",
-                "sz":      strconv.FormatFloat(quantity, 'f', -1, 64),
+                "sz":      contractSize,     // 合约张数（不是币数量）
         }
 
         return t.placeOrder(order)
@@ -352,13 +457,29 @@ func (t *OKXTrader) placeOrder(order map[string]string) (map[string]interface{},
         // OKX API: POST /api/v5/trade/order
         endpoint := "/api/v5/trade/order"
 
+        log.Printf("📤 OKX下单请求: %+v", order)
+
         resp, err := t.makeRequest("POST", endpoint, order)
         if err != nil {
                 return nil, fmt.Errorf("OKX下单失败: %w", err)
         }
 
-        log.Printf("✅ OKX下单成功: side=%s, symbol=%s, quantity=%s",
-                order["side"], order["instId"], order["sz"])
+        // 检查data数组中的详细错误信息
+        if data, ok := resp["data"].([]interface{}); ok && len(data) > 0 {
+                if orderResp, ok := data[0].(map[string]interface{}); ok {
+                        sCode, _ := orderResp["sCode"].(string)
+                        sMsg, _ := orderResp["sMsg"].(string)
+                        if sCode != "" && sCode != "0" {
+                                log.Printf("❌ OKX下单详细错误: sCode=%s, sMsg=%s", sCode, sMsg)
+                                return nil, fmt.Errorf("OKX下单失败 [%s]: %s", sCode, sMsg)
+                        }
+                        // 获取订单ID
+                        if ordId, ok := orderResp["ordId"].(string); ok && ordId != "" {
+                                log.Printf("✅ OKX下单成功: ordId=%s, side=%s, symbol=%s, quantity=%s",
+                                        ordId, order["side"], order["instId"], order["sz"])
+                        }
+                }
+        }
 
         return resp, nil
 }
