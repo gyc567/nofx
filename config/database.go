@@ -1052,8 +1052,8 @@ func (d *Database) UpdateAIModel(userID, id string, enabled bool, apiKey, custom
                 // 找到了现有配置（通过 provider 匹配，兼容旧版），更新它
                 log.Printf("⚠️  使用旧版 provider 匹配更新模型: %s -> %s", provider, existingID)
                 _, err = d.exec(`
-                        UPDATE ai_models SET enabled = ?, api_key = ?, custom_api_url = ?, custom_model_name = ?, updated_at = datetime('now')
-                        WHERE id = ? AND user_id = ?
+                        UPDATE ai_models SET enabled = $1, api_key = $2, custom_api_url = $3, custom_model_name = $4, updated_at = CURRENT_TIMESTAMP
+                        WHERE id = $5 AND user_id = $6
                 `, enabled, apiKey, customAPIURL, customModelName, existingID, userID)
                 return err
         }
@@ -1150,9 +1150,9 @@ func (d *Database) UpdateExchange(userID, id string, enabled bool, apiKey, secre
 
         // 首先尝试更新现有的用户配置
         result, err := d.exec(`
-                UPDATE exchanges SET enabled = ?, api_key = ?, secret_key = ?, testnet = ?,
-                       hyperliquid_wallet_addr = ?, aster_user = ?, aster_signer = ?, aster_private_key = ?, okx_passphrase = ?, updated_at = datetime('now')
-                WHERE id = ? AND user_id = ?
+                UPDATE exchanges SET enabled = $1, api_key = $2, secret_key = $3, testnet = $4,
+                       hyperliquid_wallet_addr = $5, aster_user = $6, aster_signer = $7, aster_private_key = $8, okx_passphrase = $9, updated_at = CURRENT_TIMESTAMP
+                WHERE id = $10 AND user_id = $11
         `, enabled, apiKey, secretKey, testnet, hyperliquidWalletAddr, asterUser, asterSigner, asterPrivateKey, okxPassphrase, id, userID)
         if err != nil {
                 log.Printf("❌ UpdateExchange: 更新失败: %v", err)
@@ -1587,7 +1587,7 @@ func (d *Database) GetLoginAttemptsByIP(ipAddress string) (int, error) {
         var count int
         err := d.queryRow(`
                 SELECT COUNT(*) FROM login_attempts
-                WHERE ip_address = ? AND success = 0 AND timestamp > datetime('now', '-15 minutes')
+                WHERE ip_address = $1 AND success = 0 AND timestamp > CURRENT_TIMESTAMP - INTERVAL '15 minutes'
         `, ipAddress).Scan(&count)
         return count, err
 }
@@ -1597,7 +1597,7 @@ func (d *Database) GetLoginAttemptsByEmail(email string) (int, error) {
         var count int
         err := d.queryRow(`
                 SELECT COUNT(*) FROM login_attempts
-                WHERE email = ? AND success = 0 AND timestamp > datetime('now', '-15 minutes')
+                WHERE email = $1 AND success = 0 AND timestamp > CURRENT_TIMESTAMP - INTERVAL '15 minutes'
         `, email).Scan(&count)
         return count, err
 }
