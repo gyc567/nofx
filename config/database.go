@@ -733,7 +733,7 @@ func (d *Database) CreateUser(user *User) error {
                 INSERT INTO users (id, email, password_hash, otp_secret, otp_verified,
                                    locked_until, failed_attempts, last_failed_at,
                                    is_active, is_admin, beta_code, created_at, updated_at)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
         `, user.ID, user.Email, user.PasswordHash, user.OTPSecret, user.OTPVerified,
                 lockedUntil, user.FailedAttempts, lastFailedAt,
                 user.IsActive, user.IsAdmin, user.BetaCode, user.CreatedAt, user.UpdatedAt)
