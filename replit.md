@@ -4,6 +4,10 @@
 Monnaire Trading Agent OS is an AI-powered cryptocurrency trading system with support for multiple AI models (DeepSeek, Qwen) and exchanges (OKX, Hyperliquid, Aster DEX). This is a full-stack application with a Go backend and React/Vite frontend.
 
 ## Recent Changes (November 27, 2025)
+- ✅ **Fixed Neon PostgreSQL cold start issues** - Added connection pool config + retry logic + keepalive
+- ✅ **Database connection pool** - MaxOpen=10, MaxIdle=5, IdleTime=30s, Lifetime=5m
+- ✅ **Retry logic for critical queries** - GetUserByID, GetExchanges, GetAIModels with exponential backoff
+- ✅ **Connection keepalive** - Background goroutine pings DB every 5 minutes
 - ✅ **Fixed OKX lot size error** - BNB contract requires integer lot size (lotSz=1)
 - ✅ **Updated contract specifications** - Accurate ctVal, minSz, lotSz for all contracts
 - ✅ **Added ContractSpec struct** - Properly returns all contract parameters from API
