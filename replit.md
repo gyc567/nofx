@@ -3,7 +3,16 @@
 ## Project Overview
 Monnaire Trading Agent OS is an AI-powered cryptocurrency trading system with support for multiple AI models (DeepSeek, Qwen) and exchanges (OKX, Hyperliquid, Aster DEX). This is a full-stack application with a Go backend and React/Vite frontend.
 
-## Recent Changes (November 25, 2025)
+## Recent Changes (November 27, 2025)
+- ✅ **Fixed OKX lot size error** - BNB contract requires integer lot size (lotSz=1)
+- ✅ **Updated contract specifications** - Accurate ctVal, minSz, lotSz for all contracts
+- ✅ **Added ContractSpec struct** - Properly returns all contract parameters from API
+- ✅ **Fixed CORS preflight requests** - OPTIONS requests now bypass auth middleware
+- ✅ **Fixed panic in GetAccountInfo** - Safe type assertions for all position fields
+- ✅ **Added custom recovery middleware** - CORS headers set even on 500 errors
+- ✅ **Fixed PostgreSQL UPSERT syntax** - Using EXCLUDED.column instead of $N
+
+## Previous Changes (November 25, 2025)
 - ✅ **Migrated database from SQLite to Neon PostgreSQL cloud**
 - ✅ **Dual database support with automatic SQL syntax conversion**
 - ✅ **Fixed PostgreSQL compatibility (placeholder conversion ? → $1, $2)**

@@ -8,6 +8,7 @@ import (
         "fmt"
         "io"
         "log"
+        "math"
         "net/http"
         "strconv"
         "strings"
@@ -195,9 +196,16 @@ func (t *OKXTrader) parsePositions(resp map[string]interface{}) []map[string]int
         return positions
 }
 
-// getContractValue 获取合约面值(ctVal)
+// ContractSpec 合约规格
+type ContractSpec struct {
+        CtVal float64 // 合约面值（1张合约对应多少币）
+        MinSz float64 // 最小下单张数
+        LotSz float64 // 下单精度（必须是lotSz的整数倍）
+}
+
+// getContractSpec 获取合约规格(ctVal, minSz, lotSz)
 // OKX永续合约的sz参数是合约张数，需要用币数量除以合约面值来转换
-func (t *OKXTrader) getContractValue(instId string) (float64, float64, error) {
+func (t *OKXTrader) getContractSpec(instId string) (*ContractSpec, error) {
         // 获取合约规格
         endpoint := "/api/v5/public/instruments"
         params := map[string]string{
@@ -209,83 +217,115 @@ func (t *OKXTrader) getContractValue(instId string) (float64, float64, error) {
         if err != nil {
                 // 如果获取失败，返回默认值
                 log.Printf("⚠️ 获取合约规格失败: %v，使用默认值", err)
-                return getDefaultContractValue(instId)
+                return getDefaultContractSpec(instId)
         }
 
         if data, ok := resp["data"].([]interface{}); ok && len(data) > 0 {
                 if inst, ok := data[0].(map[string]interface{}); ok {
-                        ctVal := 1.0
-                        minSz := 0.01
-                        lotSz := 0.01
+                        spec := &ContractSpec{
+                                CtVal: 1.0,
+                                MinSz: 1.0,
+                                LotSz: 1.0,
+                        }
                         
                         if ctValStr, ok := inst["ctVal"].(string); ok {
                                 if v, err := strconv.ParseFloat(ctValStr, 64); err == nil {
-                                        ctVal = v
+                                        spec.CtVal = v
                                 }
                         }
                         if minSzStr, ok := inst["minSz"].(string); ok {
                                 if v, err := strconv.ParseFloat(minSzStr, 64); err == nil {
-                                        minSz = v
+                                        spec.MinSz = v
                                 }
                         }
                         if lotSzStr, ok := inst["lotSz"].(string); ok {
                                 if v, err := strconv.ParseFloat(lotSzStr, 64); err == nil {
-                                        lotSz = v
+                                        spec.LotSz = v
                                 }
                         }
                         
-                        log.Printf("📋 合约规格 %s: ctVal=%.4f, minSz=%.4f, lotSz=%.4f", instId, ctVal, minSz, lotSz)
-                        return ctVal, minSz, nil
+                        log.Printf("📋 合约规格 %s: ctVal=%.6f, minSz=%.4f, lotSz=%.4f", instId, spec.CtVal, spec.MinSz, spec.LotSz)
+                        return spec, nil
                 }
         }
 
-        return getDefaultContractValue(instId)
+        return getDefaultContractSpec(instId)
 }
 
-// getDefaultContractValue 返回默认的合约面值
-func getDefaultContractValue(instId string) (float64, float64, error) {
-        // 常见合约的默认面值
-        defaults := map[string]float64{
-                "BTC-USDT-SWAP":  0.01,    // 1张 = 0.01 BTC
-                "ETH-USDT-SWAP":  0.1,     // 1张 = 0.1 ETH
-                "SOL-USDT-SWAP":  1.0,     // 1张 = 1 SOL
-                "DOGE-USDT-SWAP": 1000.0,  // 1张 = 1000 DOGE
-                "XRP-USDT-SWAP":  100.0,   // 1张 = 100 XRP
-                "BNB-USDT-SWAP":  0.1,     // 1张 = 0.1 BNB
-                "ADA-USDT-SWAP":  100.0,   // 1张 = 100 ADA
-                "HYPE-USDT-SWAP": 1.0,     // 1张 = 1 HYPE (估计值)
+// getDefaultContractSpec 返回默认的合约规格
+// 数据来源: OKX API /api/v5/public/instruments (2025-11-27更新)
+func getDefaultContractSpec(instId string) (*ContractSpec, error) {
+        // 常见合约的默认规格 (ctVal, minSz, lotSz)
+        defaults := map[string]*ContractSpec{
+                "BTC-USDT-SWAP":  {CtVal: 0.01, MinSz: 0.01, LotSz: 0.01},   // 1张 = 0.01 BTC
+                "ETH-USDT-SWAP":  {CtVal: 0.1, MinSz: 0.01, LotSz: 0.01},    // 1张 = 0.1 ETH
+                "SOL-USDT-SWAP":  {CtVal: 1.0, MinSz: 0.01, LotSz: 0.01},    // 1张 = 1 SOL
+                "DOGE-USDT-SWAP": {CtVal: 1000.0, MinSz: 0.01, LotSz: 0.01}, // 1张 = 1000 DOGE
+                "XRP-USDT-SWAP":  {CtVal: 100.0, MinSz: 0.01, LotSz: 0.01},  // 1张 = 100 XRP
+                "BNB-USDT-SWAP":  {CtVal: 0.01, MinSz: 1.0, LotSz: 1.0},     // 1张 = 0.01 BNB, 必须整张
+                "ADA-USDT-SWAP":  {CtVal: 100.0, MinSz: 0.1, LotSz: 0.1},    // 1张 = 100 ADA
+                "HYPE-USDT-SWAP": {CtVal: 1.0, MinSz: 0.01, LotSz: 0.01},    // 1张 = 1 HYPE (估计值)
         }
         
-        if ctVal, ok := defaults[instId]; ok {
-                return ctVal, 0.01, nil
+        if spec, ok := defaults[instId]; ok {
+                log.Printf("📋 使用默认合约规格 %s: ctVal=%.6f, minSz=%.4f, lotSz=%.4f", instId, spec.CtVal, spec.MinSz, spec.LotSz)
+                return spec, nil
         }
         
-        // 默认返回1.0
-        return 1.0, 0.01, nil
+        // 默认返回保守值
+        defaultSpec := &ContractSpec{CtVal: 1.0, MinSz: 1.0, LotSz: 1.0}
+        log.Printf("⚠️ 未知合约 %s，使用默认规格: ctVal=1.0, minSz=1.0, lotSz=1.0", instId)
+        return defaultSpec, nil
 }
 
 // convertToContractSize 将币数量转换为合约张数
 func (t *OKXTrader) convertToContractSize(instId string, coinAmount float64) (string, error) {
-        ctVal, minSz, err := t.getContractValue(instId)
+        spec, err := t.getContractSpec(instId)
         if err != nil {
                 return "", err
         }
         
         // 合约张数 = 币数量 / 合约面值
-        contractSize := coinAmount / ctVal
+        rawContractSize := coinAmount / spec.CtVal
         
-        // 向下取整到lotSz精度(0.01)
-        contractSize = float64(int(contractSize*100)) / 100
-        
-        // 确保至少达到最小下单量
-        if contractSize < minSz {
-                contractSize = minSz
+        // 根据lotSz进行取整（向下取整到lotSz的整数倍）
+        // 例如: lotSz=1 时，3.7 -> 3; lotSz=0.1 时，3.75 -> 3.7; lotSz=0.01 时，3.756 -> 3.75
+        contractSize := rawContractSize
+        if spec.LotSz > 0 {
+                contractSize = math.Floor(rawContractSize/spec.LotSz) * spec.LotSz
         }
         
-        log.Printf("📊 数量转换: 币数量=%.6f, 合约面值=%.6f, 合约张数=%.2f", coinAmount, ctVal, contractSize)
+        // 检查取整后是否为0或小于最小下单量
+        if contractSize < spec.MinSz {
+                // 计算最小需要的币数量
+                minCoinAmount := spec.MinSz * spec.CtVal
+                
+                if rawContractSize < spec.MinSz * 0.5 {
+                        // 如果原始数量远小于最小下单量（小于50%），返回错误而不是默默使用最小值
+                        return "", fmt.Errorf("下单数量过小: 需要至少 %.6f %s (最小 %.0f 张合约), 当前只有 %.6f %s",
+                                minCoinAmount, instId[:strings.Index(instId, "-")], spec.MinSz, coinAmount, instId[:strings.Index(instId, "-")])
+                }
+                
+                // 如果接近最小下单量，使用最小值并警告
+                log.Printf("⚠️ 数量不足，向上调整到最小下单量: %.4f -> %.4f 张", contractSize, spec.MinSz)
+                contractSize = spec.MinSz
+        }
         
-        // 格式化为字符串，保留2位小数
-        return fmt.Sprintf("%.2f", contractSize), nil
+        log.Printf("📊 数量转换: 币数量=%.6f, ctVal=%.6f, lotSz=%.4f, minSz=%.4f -> 合约张数=%.4f", 
+                coinAmount, spec.CtVal, spec.LotSz, spec.MinSz, contractSize)
+        
+        // 根据lotSz决定输出精度
+        // lotSz=1 -> 整数; lotSz=0.1 -> 1位小数; lotSz=0.01 -> 2位小数
+        var formatStr string
+        if spec.LotSz >= 1 {
+                formatStr = "%.0f"
+        } else if spec.LotSz >= 0.1 {
+                formatStr = "%.1f"
+        } else {
+                formatStr = "%.2f"
+        }
+        
+        return fmt.Sprintf(formatStr, contractSize), nil
 }
 
 // OpenLong 开多仓
