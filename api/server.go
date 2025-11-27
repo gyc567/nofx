@@ -34,10 +34,17 @@ func NewServer(traderManager *manager.TraderManager, database *config.Database, 
         // 设置为Release模式（减少日志输出）
         gin.SetMode(gin.ReleaseMode)
 
-        router := gin.Default()
-
-        // 启用CORS
+        // 使用gin.New()而不是gin.Default()，以便我们可以自定义中间件顺序
+        router := gin.New()
+        
+        // 添加Logger中间件
+        router.Use(gin.Logger())
+        
+        // 启用CORS（必须在Recovery之前，确保即使panic也能设置CORS头）
         router.Use(corsMiddleware())
+        
+        // 添加自定义Recovery中间件，确保panic时也返回带CORS头的响应
+        router.Use(corsRecoveryMiddleware())
 
         s := &Server{
                 router:        router,
@@ -51,6 +58,33 @@ func NewServer(traderManager *manager.TraderManager, database *config.Database, 
         s.setupRoutes()
 
         return s
+}
+
+// corsRecoveryMiddleware 自定义Recovery中间件，确保panic时也返回带CORS头的响应
+func corsRecoveryMiddleware() gin.HandlerFunc {
+        return func(c *gin.Context) {
+                defer func() {
+                        if err := recover(); err != nil {
+                                // 记录panic日志
+                                log.Printf("❌ Panic recovered: %v", err)
+                                
+                                // 确保CORS头已设置（如果还没设置的话）
+                                if c.Writer.Header().Get("Access-Control-Allow-Origin") == "" {
+                                        origin := c.Request.Header.Get("Origin")
+                                        if origin != "" {
+                                                c.Writer.Header().Set("Access-Control-Allow-Origin", origin)
+                                                c.Writer.Header().Set("Access-Control-Allow-Credentials", "true")
+                                        }
+                                }
+                                
+                                // 返回500错误
+                                c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
+                                        "error": "Internal server error",
+                                })
+                        }
+                }()
+                c.Next()
+        }
 }
 
 // corsMiddleware CORS中间件
