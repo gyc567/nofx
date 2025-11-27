@@ -1,9 +1,9 @@
-# Monnaire Trading Agent OS 用户手册
+# Agent Trade 用户手册
 
 ## 1. 注册和登录
 
 ### 1.1 注册
-要使用 Monnaire Trading Agent OS，您首先需要注册一个账户：
+要使用 Agent Trade，您首先需要注册一个账户：
 
 1. 在 `http://localhost:3000` 或您的部署域名打开Web界面
 2. 点击顶部导航栏中的"Register"（注册）按钮

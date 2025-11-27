@@ -1,9 +1,9 @@
-# Monnaire Trading Agent OS User Manual
+# Agent Trade User Manual
 
 ## 1. Registration and Login
 
 ### 1.1 Registration
-To use Monnaire Trading Agent OS, you first need to register an account:
+To use Agent Trade, you first need to register an account:
 
 1. Open the web interface at `http://localhost:3000` or your deployed domain
 2. Click on the "Register" button in the top navigation

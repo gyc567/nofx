@@ -79,7 +79,7 @@ export function LoginPage() {
               <img src="/icons/Monnaire_Logo.svg" alt="Monnaire Logo" className="w-16 h-16 object-contain" />
             </div>
             <h1 className="text-2xl font-bold" style={{ color: 'var(--brand-light-gray)' }}>
-              登录 Monnaire Trading Agent OS
+              登录 Agent Trade
             </h1>
             <p className="text-sm mt-2" style={{ color: 'var(--text-secondary)' }}>
               {step === 'login' ? '请输入您的邮箱和密码' : '请输入两步验证码'}
