@@ -212,16 +212,17 @@ func (d *Database) createTablesPostgres() error {
                         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                 )`,
 
-                // AI模型配置表
+                // AI模型配置表 (复合主键: id + user_id，支持多用户)
                 `CREATE TABLE IF NOT EXISTS ai_models (
-                        id TEXT PRIMARY KEY,
+                        id TEXT NOT NULL,
                         user_id TEXT NOT NULL DEFAULT 'default',
                         name TEXT NOT NULL,
                         provider TEXT NOT NULL,
                         enabled BOOLEAN DEFAULT false,
                         api_key TEXT DEFAULT '',
                         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                        PRIMARY KEY (id, user_id)
                 )`,
 
                 // 交易所配置表
@@ -387,6 +388,12 @@ func (d *Database) alterTables() error {
                 log.Printf("⚠️ 迁移exchanges表失败: %v", err)
         }
 
+        // 检查是否需要迁移ai_models表的主键结构（从单主键id改为复合主键id+user_id）
+        err = d.migrateAIModelsTable()
+        if err != nil {
+                log.Printf("⚠️ 迁移ai_models表失败: %v", err)
+        }
+
         return nil
 }
 
@@ -402,7 +409,7 @@ func (d *Database) initDefaultData() error {
                 return fmt.Errorf("创建admin用户失败: %w", err)
         }
 
-        // 初始化AI模型（使用default用户）
+        // 初始化AI模型（为default和admin用户都创建）
         aiModels := []struct {
                 id, name, provider string
         }{
@@ -410,14 +417,19 @@ func (d *Database) initDefaultData() error {
                 {"qwen", "Qwen", "qwen"},
         }
 
-        for _, model := range aiModels {
-                _, err := d.exec(`
-                        INSERT INTO ai_models (id, user_id, name, provider, enabled)
-                        VALUES ($1, 'default', $2, $3, false)
-                        ON CONFLICT (id) DO NOTHING
-                `, model.id, model.name, model.provider)
-                if err != nil {
-                        return fmt.Errorf("初始化AI模型失败: %w", err)
+        // 需要初始化模型的用户列表
+        modelUsers := []string{"default", "admin"}
+
+        for _, userID := range modelUsers {
+                for _, model := range aiModels {
+                        _, err := d.exec(`
+                                INSERT INTO ai_models (id, user_id, name, provider, enabled)
+                                VALUES ($1, $2, $3, $4, false)
+                                ON CONFLICT (id, user_id) DO NOTHING
+                        `, model.id, userID, model.name, model.provider)
+                        if err != nil {
+                                return fmt.Errorf("初始化AI模型失败 (user=%s, model=%s): %w", userID, model.id, err)
+                        }
                 }
         }
 
@@ -474,6 +486,91 @@ func (d *Database) initDefaultData() error {
 // migrateExchangesTable 迁移exchanges表支持多用户
 func (d *Database) migrateExchangesTable() error {
         // PostgreSQL不需要这个迁移，已经在createTablesPostgres中创建了正确的表结构
+        return nil
+}
+
+// migrateAIModelsTable 迁移ai_models表从单主键id改为复合主键(id, user_id)
+// 使用 RENAME + CREATE 策略确保原子性和数据安全
+func (d *Database) migrateAIModelsTable() error {
+        // 检查当前主键结构
+        var constraintCols int
+        err := d.queryRow(`
+                SELECT COUNT(*) FROM information_schema.key_column_usage 
+                WHERE table_name = 'ai_models' 
+                AND constraint_name = 'ai_models_pkey'
+        `).Scan(&constraintCols)
+        if err != nil {
+                return fmt.Errorf("检查ai_models主键失败: %w", err)
+        }
+
+        // 如果主键只有1列，说明还是老结构，需要迁移
+        if constraintCols == 1 {
+                log.Println("🔄 迁移ai_models表主键结构...")
+
+                // 检查是否有之前迁移失败遗留的备份表，如果有则从备份恢复
+                var backupExists int
+                d.queryRow(`SELECT COUNT(*) FROM information_schema.tables WHERE table_name = 'ai_models_old'`).Scan(&backupExists)
+                if backupExists > 0 {
+                        log.Println("⚠️ 检测到之前迁移失败的备份表，尝试恢复...")
+                        // 删除可能的不完整新表，恢复旧表
+                        d.exec(`DROP TABLE IF EXISTS ai_models`)
+                        _, err = d.exec(`ALTER TABLE ai_models_old RENAME TO ai_models`)
+                        if err != nil {
+                                return fmt.Errorf("从备份恢复失败: %w", err)
+                        }
+                        log.Println("✅ 从备份恢复成功，重新开始迁移")
+                }
+
+                // 1. 重命名原表为备份（原子操作，保留原始数据）
+                _, err = d.exec(`ALTER TABLE ai_models RENAME TO ai_models_old`)
+                if err != nil {
+                        return fmt.Errorf("重命名ai_models表失败: %w", err)
+                }
+
+                // 2. 创建新表（复合主键）
+                _, err = d.exec(`
+                        CREATE TABLE ai_models (
+                                id TEXT NOT NULL,
+                                user_id TEXT NOT NULL DEFAULT 'default',
+                                name TEXT NOT NULL,
+                                provider TEXT NOT NULL,
+                                enabled BOOLEAN DEFAULT false,
+                                api_key TEXT DEFAULT '',
+                                custom_api_url TEXT DEFAULT '',
+                                custom_model_name TEXT DEFAULT '',
+                                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                                PRIMARY KEY (id, user_id)
+                        )
+                `)
+                if err != nil {
+                        // 创建失败，恢复原表名
+                        d.exec(`ALTER TABLE ai_models_old RENAME TO ai_models`)
+                        return fmt.Errorf("创建新ai_models表失败: %w", err)
+                }
+
+                // 3. 迁移数据
+                _, err = d.exec(`
+                        INSERT INTO ai_models (id, user_id, name, provider, enabled, api_key, custom_api_url, custom_model_name, created_at, updated_at)
+                        SELECT id, user_id, name, provider, enabled, COALESCE(api_key, ''), COALESCE(custom_api_url, ''), COALESCE(custom_model_name, ''), created_at, updated_at
+                        FROM ai_models_old
+                `)
+                if err != nil {
+                        // 迁移失败，恢复原表
+                        d.exec(`DROP TABLE ai_models`)
+                        d.exec(`ALTER TABLE ai_models_old RENAME TO ai_models`)
+                        return fmt.Errorf("迁移ai_models数据失败: %w", err)
+                }
+
+                // 4. 删除备份表（迁移成功后）
+                _, err = d.exec(`DROP TABLE ai_models_old`)
+                if err != nil {
+                        log.Printf("⚠️ 删除备份表失败: %v (可手动删除)", err)
+                }
+
+                log.Println("✅ ai_models表主键迁移完成")
+        }
+
         return nil
 }
 
