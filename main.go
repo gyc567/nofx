@@ -25,7 +25,7 @@ type LeverageConfig struct {
 
 // ConfigFile 配置文件结构，只包含需要同步到数据库的字段
 type ConfigFile struct {
-        AdminMode          bool           `json:"admin_mode"`
+        AdminMode          bool           `json:"admin_mode"` // 注意：admin_mode不会自动同步到数据库，需要手动管理
         BetaMode           bool           `json:"beta_mode"`
         APIServerPort      int            `json:"api_server_port"`
         UseDefaultCoins    bool           `json:"use_default_coins"`
@@ -63,8 +63,9 @@ func syncConfigToDatabase(database *config.Database) error {
         log.Printf("🔄 开始同步config.json到数据库...")
 
         // 同步各配置项到数据库
+        // 注意：admin_mode 不在这里同步，因为它应该由用户手动控制，不应该在部署时被覆盖
         configs := map[string]string{
-                "admin_mode":            fmt.Sprintf("%t", configFile.AdminMode),
+                // "admin_mode":            fmt.Sprintf("%t", configFile.AdminMode),
                 "beta_mode":             fmt.Sprintf("%t", configFile.BetaMode),
                 "api_server_port":       strconv.Itoa(configFile.APIServerPort),
                 "use_default_coins":     fmt.Sprintf("%t", configFile.UseDefaultCoins),
