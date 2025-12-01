@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react'
 import { motion } from 'framer-motion'
 import { Menu, X, ChevronDown } from 'lucide-react'
 import { t, type Language } from '../../i18n/translations'
+import Web3ConnectButton from '../Web3ConnectButton'
 
 interface HeaderBarProps {
   onLoginClick?: () => void
@@ -282,9 +283,10 @@ export default function HeaderBar({ isLoggedIn = false, isHomePage = false, curr
                   </div>
                 </div>
               ) : (
-                /* Show login/register buttons when not logged in and not on login/register pages */
+                /* Show Web3 wallet button, login/register buttons when not logged in and not on login/register pages */
                 currentPage !== 'login' && currentPage !== 'register' && (
                   <div className='flex items-center gap-3'>
+                    <Web3ConnectButton size="small" variant="secondary" />
                     <a
                       href='/login'
                       className='px-3 py-2 text-sm font-medium transition-colors rounded'
@@ -583,9 +585,10 @@ export default function HeaderBar({ isLoggedIn = false, isHomePage = false, curr
             </div>
           )}
 
-          {/* Show login/register buttons when not logged in and not on login/register pages */}
+          {/* Show Web3 wallet button and login/register buttons when not logged in and not on login/register pages */}
           {!isLoggedIn && currentPage !== 'login' && currentPage !== 'register' && (
             <div className='space-y-2 mt-2'>
+              <Web3ConnectButton size="small" variant="secondary" />
               <a
                 href='/login'
                 className='block w-full px-4 py-2 rounded text-sm font-medium text-center transition-colors'
