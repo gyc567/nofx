@@ -284,7 +284,7 @@ export default function HeaderBar({ isLoggedIn = false, isHomePage = false, curr
                 </div>
               ) : (
                 /* Show Web3 wallet button, login/register buttons when not logged in and not on login/register pages */
-                currentPage !== 'login' && currentPage !== 'register' && (
+                !['login', 'register'].includes(currentPage || '') && (
                   <div className='flex items-center gap-3'>
                     <Web3ConnectButton size="small" variant="secondary" />
                     <a
@@ -586,7 +586,7 @@ export default function HeaderBar({ isLoggedIn = false, isHomePage = false, curr
           )}
 
           {/* Show Web3 wallet button and login/register buttons when not logged in and not on login/register pages */}
-          {!isLoggedIn && currentPage !== 'login' && currentPage !== 'register' && (
+          {!isLoggedIn && !['login', 'register'].includes(currentPage || '') && (
             <div className='space-y-2 mt-2'>
               <Web3ConnectButton size="small" variant="secondary" />
               <a

@@ -27,6 +27,7 @@ export function LandingPage() {
         onLoginClick={() => setShowLoginModal(true)} 
         isLoggedIn={isLoggedIn} 
         isHomePage={true}
+        currentPage="home"
         language={language}
         onLanguageChange={setLanguage}
         user={user}
