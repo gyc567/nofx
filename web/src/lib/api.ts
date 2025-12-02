@@ -349,4 +349,62 @@ export const api = {
     });
     if (!res.ok) throw new Error('保存用户信号源配置失败');
   },
+
+  // 用户资料相关接口
+  async getUserProfile(): Promise<any> {
+    const res = await fetch(`${API_BASE}/user/profile`, {
+      headers: getAuthHeaders(),
+    });
+    if (!res.ok) {
+      let errorMsg = '获取用户资料失败';
+      try {
+        const errorData = await res.json();
+        if (errorData.error) {
+          errorMsg = errorData.error;
+        }
+      } catch (e) {
+        // 使用默认错误信息
+      }
+      throw new Error(errorMsg);
+    }
+    return res.json();
+  },
+
+  async getUserStats(): Promise<any> {
+    const res = await fetch(`${API_BASE}/user/stats`, {
+      headers: getAuthHeaders(),
+    });
+    if (!res.ok) {
+      let errorMsg = '获取用户统计数据失败';
+      try {
+        const errorData = await res.json();
+        if (errorData.error) {
+          errorMsg = errorData.error;
+        }
+      } catch (e) {
+        // 使用默认错误信息
+      }
+      throw new Error(errorMsg);
+    }
+    return res.json();
+  },
+
+  async getUserCredits(): Promise<any> {
+    const res = await fetch(`${API_BASE}/user/credits`, {
+      headers: getAuthHeaders(),
+    });
+    if (!res.ok) {
+      let errorMsg = '获取用户积分失败';
+      try {
+        const errorData = await res.json();
+        if (errorData.error) {
+          errorMsg = errorData.error;
+        }
+      } catch (e) {
+        // 使用默认错误信息
+      }
+      throw new Error(errorMsg);
+    }
+    return res.json();
+  },
 };

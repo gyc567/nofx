@@ -270,6 +270,19 @@ export default function HeaderBar({ isLoggedIn = false, isHomePage = false, curr
                             <div className='text-xs' style={{ color: 'var(--text-secondary)' }}>{t('loggedInAs', language)}</div>
                             <div className='text-sm font-medium' style={{ color: 'var(--brand-light-gray)' }}>{user.email}</div>
                           </div>
+                          {/* 用户信息选项 */}
+                          <a
+                            href='/profile'
+                            onClick={() => setUserDropdownOpen(false)}
+                            className='flex items-center gap-2 px-3 py-2 text-sm transition-colors hover:opacity-80'
+                            style={{ color: 'var(--brand-light-gray)' }}
+                          >
+                            <svg className='w-4 h-4' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
+                              <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z' />
+                            </svg>
+                            {t('userProfile', language)}
+                          </a>
+
                           {onLogout && (
                             <button
                               onClick={() => {

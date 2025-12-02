@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState, Suspense } from 'react';
 import useSWR from 'swr';
 import { api } from './lib/api';
 import { EquityChart } from './components/EquityChart';
@@ -11,6 +11,9 @@ import { LandingPage } from './pages/LandingPage';
 import { UserManualPage } from './components/UserManualPage';
 import HeaderBar from './components/landing/HeaderBar';
 import AILearning from './components/AILearning';
+
+// 用户详情页面 - 使用React.lazy实现代码分割
+const UserProfilePage = React.lazy(() => import('./pages/UserProfilePage'));
 import { LanguageProvider, useLanguage } from './contexts/LanguageContext';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { t, type Language } from './i18n/translations';
@@ -220,6 +223,23 @@ function App() {
   if (route === '/user-manual' || route === '/user-manual/zh' || route === '/user-manual/en') {
     return <UserManualPage />;
   }
+
+  // 用户详情页面路由
+  if (route === '/profile') {
+    return (
+      <Suspense fallback={
+        <div className="min-h-screen flex items-center justify-center" style={{ background: '#0B0E11' }}>
+          <div className="text-center">
+            <img src="/icons/Monnaire_Logo.svg" alt="Monnaire Logo" className="w-16 h-16 mx-auto mb-4 animate-pulse" />
+            <p style={{ color: '#EAECEF' }}>{t('loading', language)}</p>
+          </div>
+        </div>
+      }>
+        <UserProfilePage />
+      </Suspense>
+    );
+  }
+
   if (route === '/competition') {
     return (
       <div className="min-h-screen" style={{ background: '#000000', color: '#EAECEF' }}>

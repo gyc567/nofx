@@ -20,6 +20,29 @@ export const translations = {
     realtimeNav: 'Live',
     configNav: 'Config',
     dashboardNav: 'Dashboard',
+    userProfile: 'User Profile',
+
+    // User Profile
+    userProfileSubtitle: 'View your account information and credits',
+    basicInfo: 'Basic Information',
+    accountOverview: 'Account Overview',
+    credits: 'Credits',
+    availableCredits: 'Available Credits',
+    usedCredits: 'Used Credits',
+    totalTransactions: 'Total Transactions',
+    email: 'Email',
+    memberSince: 'Member Since',
+    lastLogin: 'Last Login',
+    back: 'Back',
+    retry: 'Retry',
+    loggedInAs: 'Logged in as',
+    exitLogin: 'Exit Login',
+    total: 'Total',
+    dailyPnl: 'Daily P&L',
+    tradersOverview: 'Traders Overview',
+    totalTraders: 'Total Traders',
+    activeTraders: 'Active Traders',
+    totalPositions: 'Total Positions',
 
     // Footer
     footerTitle: 'Agent Trade - AI Trading System',
@@ -470,10 +493,33 @@ export const translations = {
     realtimeNav: '实时',
     configNav: '配置',
     dashboardNav: '看板',
+    userProfile: '用户信息',
 
     // Footer
     footerTitle: 'Agent Trade - AI交易系统',
     footerWarning: '⚠️ 交易有风险，请谨慎使用。',
+
+    // User Profile
+    userProfileSubtitle: '查看您的账户信息和积分',
+    basicInfo: '基本信息',
+    accountOverview: '账户概览',
+    credits: '积分',
+    availableCredits: '可用积分',
+    usedCredits: '已用积分',
+    totalTransactions: '总交易数',
+    email: '邮箱',
+    memberSince: '注册时间',
+    lastLogin: '最后登录',
+    back: '返回',
+    retry: '重试',
+    loggedInAs: '登录用户',
+    exitLogin: '退出登录',
+    total: '总计',
+    dailyPnl: '日收益',
+    tradersOverview: '交易员概览',
+    totalTraders: '总交易员数',
+    activeTraders: '活跃交易员',
+    totalPositions: '总持仓数',
 
     // Stats Cards
     totalEquity: '总净值',
