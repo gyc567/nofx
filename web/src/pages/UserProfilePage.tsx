@@ -1,5 +1,5 @@
 import React from 'react';
-import { useUserProfile } from '../hooks/useUserProfile';
+import { useUserProfile, useUserCredits } from '../hooks/useUserProfile';
 import { useAuth } from '../contexts/AuthContext';
 import { useLanguage } from '../contexts/LanguageContext';
 import { t } from '../i18n/translations';
@@ -21,6 +21,7 @@ const UserProfilePage: React.FC = () => {
   const { user } = useAuth();
   const { userProfile, loading, error, refetch } = useUserProfile();
   const { language } = useLanguage();
+  const { credits, loading: creditsLoading, error: creditsError } = useUserCredits();
 
   // 渲染加载状态
   if (loading) {
@@ -180,16 +181,60 @@ const UserProfilePage: React.FC = () => {
                 {t('profile.creditSystem', language)}
               </h3>
 
-              <div className="text-center py-8">
-                <div className="text-4xl font-bold text-blue-600 dark:text-blue-400 mb-2">
-                  🎯
-                </div>                <p className="text-gray-600 dark:text-gray-400">
-                  {t('profile.creditsComingSoon', language)}
-                </p>
-                <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">
-                  {t('profile.stayTuned', language)}
-                </p>
-              </div>
+              {creditsLoading ? (
+                <div className="text-center py-8">
+                  <div className="text-4xl font-bold text-blue-600 dark:text-blue-400 mb-2">
+                    ⏳
+                  </div>
+                  <p className="text-gray-600 dark:text-gray-400">
+                    加载积分数据中...
+                  </p>
+                </div>
+              ) : creditsError ? (
+                <div className="text-center py-8">
+                  <div className="text-4xl font-bold text-red-600 dark:text-red-400 mb-2">
+                    ⚠️
+                  </div>
+                  <p className="text-red-600 dark:text-red-400">
+                    积分数据加载失败
+                  </p>
+                </div>
+              ) : (
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  <div className="text-center">
+                    <div className="text-2xl font-bold text-green-600 dark:text-green-400">
+                      {credits?.available_credits || 0}
+                    </div>
+                    <div className="text-sm text-gray-500 dark:text-gray-400">
+                      可用积分
+                    </div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">
+                      {credits?.total_credits || 0}
+                    </div>
+                    <div className="text-sm text-gray-500 dark:text-gray-400">
+                      总积分
+                    </div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-2xl font-bold text-orange-600 dark:text-orange-400">
+                      {credits?.used_credits || 0}
+                    </div>
+                    <div className="text-sm text-gray-500 dark:text-gray-400">
+                      已用积分
+                    </div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-2xl font-bold text-purple-600 dark:text-purple-400">
+                      {credits?.transaction_count || 0}
+                    </div>
+                    <div className="text-sm text-gray-500 dark:text-gray-400">
+                      交易次数
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </div>
