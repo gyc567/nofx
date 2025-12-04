@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import useSWR from 'swr';
 import { api } from '../lib/api';
 import { useAuth } from '../contexts/AuthContext';
+import { getApiUrl } from '../lib/apiConfig';
 
 /**
  * 用户资料数据结构
@@ -170,11 +171,13 @@ export function useUserCredits() {
     async () => {
       try {
         // 调用真实的积分系统API
-        // Bug修复: 移除v1版本号，适配后端路由
-        // 后端路由: /api/user/credits (无v1版本号)
+        // Bug修复: 使用统一的API配置模块
+        // 使用 getApiUrl() 确保在所有环境下都指向正确的后端地址
+        // 开发环境: http://localhost:8080/api/user/credits
+        // 生产环境: https://nofx-gyc567.replit.app/api/user/credits
         // API: GET /api/user/credits
         // 返回: { available_credits, total_credits, used_credits }
-        const response = await fetch('/api/user/credits', {
+        const response = await fetch(getApiUrl('user/credits'), {
           method: 'GET',
           headers: {
             'Authorization': `Bearer ${token}`,
