@@ -3,7 +3,13 @@
 ## Project Overview
 Monnaire Trading Agent OS is an AI-powered cryptocurrency trading system with support for multiple AI models (DeepSeek, Qwen) and exchanges (OKX, Hyperliquid, Aster DEX). This is a full-stack application with a Go backend and React/Vite frontend.
 
-## Recent Changes (December 1, 2025)
+## Recent Changes (December 4, 2025)
+- ✅ **Fixed credits API 401 authentication error** - Root cause: context key mismatch between authMiddleware ("user_id") and getUserID() ("userID")
+- ✅ **Updated getUserID() in api/credits/handler.go** - Now checks for correct "user_id" key first, with fallback to "userID"
+- ✅ **Fixed trader/auto_trader_enhanced.go compilation errors** - Removed unused import, fixed method calls, corrected parameter types
+- 📋 **Bug proposal documented**: BUG_PROPOSAL_CREDITS_API_401.md
+
+## Previous Changes (December 1, 2025)
 - ✅ **Fixed user registration 500 error** - Root cause: GetUserByEmail and CreateUser lacked retry logic for Neon cold start
 - ✅ **Added withRetry to GetUserByEmail** - Handles Neon cold start during email existence check
 - ✅ **Added withRetry to CreateUser** - Handles Neon cold start during user creation
