@@ -97,7 +97,7 @@ export function WalletSelector({ onSelect, onClose }: WalletSelectorProps) {
   // 获取安装状态文字
   const getInstallStatusText = (isInstalled: boolean) => {
     return isInstalled
-      ? (t('web3.installed', language) || '已安装')
+      ? '已安装'
       : (t('web3.notInstalled', language) || '未安装');
   };
 
@@ -195,7 +195,7 @@ export function WalletSelector({ onSelect, onClose }: WalletSelectorProps) {
                         className="flex items-center gap-1 text-xs text-yellow-500 hover:text-yellow-400 transition-colors"
                       >
                         <ExternalLink className="w-3 h-3" />
-                        {t('web3.install', language) || '安装'}
+                        {t('web3.installMetaMask', language) || '安装'}
                       </button>
                     )}
                   </div>
@@ -204,7 +204,7 @@ export function WalletSelector({ onSelect, onClose }: WalletSelectorProps) {
                   {wallet.isInstalled && (
                     <div className="flex items-center gap-1">
                       <span className="text-xs" style={{ color: 'var(--text-secondary)' }}>
-                        {t('web3.confidence', language) || '置信度'}:
+                        置信度:
                       </span>
                       <span
                         className="text-xs font-medium"
@@ -229,7 +229,7 @@ export function WalletSelector({ onSelect, onClose }: WalletSelectorProps) {
                     <div className="flex items-start gap-2">
                       <AlertCircle className="w-4 h-4 text-orange-500 flex-shrink-0 mt-0.5" />
                       <p className="text-xs" style={{ color: 'var(--text-secondary)' }}>
-                        {t('web3.installPrompt', language) ||
+                        {t('web3.pleaseInstall', language) ||
                           `请先安装 ${wallet.name} 钱包插件，然后刷新页面重试`}
                       </p>
                     </div>
@@ -242,7 +242,7 @@ export function WalletSelector({ onSelect, onClose }: WalletSelectorProps) {
                     <div className="flex items-center gap-2">
                       <div className="animate-spin rounded-full h-4 w-4 border-2 border-blue-500 border-t-transparent" />
                       <p className="text-xs" style={{ color: 'var(--brand-blue)' }}>
-                        {t('web3.connectingWallet', language) || '正在连接钱包...'}
+                        {t('web3.connecting', language) || '正在连接钱包...'}
                       </p>
                     </div>
                   </div>
@@ -255,7 +255,7 @@ export function WalletSelector({ onSelect, onClose }: WalletSelectorProps) {
         {/* 更多信息链接 */}
         <div className="mt-4 pt-4 border-t" style={{ borderColor: 'var(--panel-border)' }}>
           <p className="text-xs text-center" style={{ color: 'var(--text-secondary)' }}>
-            {t('web3.secureConnection', language) || '所有连接都是安全加密的，我们不会存储您的私钥'}
+            {t('web3.secure', language) || '所有连接都是安全加密的，我们不会存储您的私钥'}
           </p>
           <div className="flex justify-center gap-4 mt-2">
             <a
@@ -264,7 +264,7 @@ export function WalletSelector({ onSelect, onClose }: WalletSelectorProps) {
               rel="noopener noreferrer"
               className="text-xs text-yellow-500 hover:text-yellow-400 transition-colors"
             >
-              {t('web3.securityInfo', language) || '安全信息'}
+              {t('web3.securityNotice', language) || '安全信息'}
             </a>
             <a
               href="https://docs.metamask.io/"
@@ -272,7 +272,7 @@ export function WalletSelector({ onSelect, onClose }: WalletSelectorProps) {
               rel="noopener noreferrer"
               className="text-xs text-yellow-500 hover:text-yellow-400 transition-colors"
             >
-              {t('web3.help', language) || '帮助文档'}
+              {t('web3.visitWebsite', language) || '帮助文档'}
             </a>
           </div>
         </div>
