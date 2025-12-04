@@ -163,13 +163,39 @@ export function useUserProfile(): UserProfileState {
  * 原问题: 前端调用 /api/v1/user/credits (404)
  * 解决方案: 适配后端路由 /api/user/credits
  */
+/**
+ * 用户积分数据Hook
+ * 从 user_credits 表获取用户积分真实数据
+ *
+ * 遵循Linus Torvalds的"好品味"原则：
+ * - 消除边界情况：所有场景使用真实API
+ * - 简洁执念：只返回必要字段
+ * - 实用主义：显示真实数据而非假数据
+ *
+ * Bug修复: API路径不匹配问题
+ * 原问题: 前端调用 /api/v1/user/credits (404)
+ * 解决方案: 适配后端路由 /api/user/credits
+ *
+ * Bug修复: 认证Token过期导致401错误
+ * 原问题: Token验证不严格，导致401 Unauthorized
+ * 解决方案: 严格检查token有效性，友好错误提示
+ */
 export function useUserCredits() {
   const { token } = useAuth();
 
   const { data, error, mutate } = useSWR(
-    token ? 'user-credits' : null,
+    // 严格的token检查：非空字符串且长度大于0
+    // 避免token为null、undefined或空字符串时发起无效请求
+    token && typeof token === 'string' && token.length > 0 && token !== 'undefined' && token !== 'null'
+      ? 'user-credits'
+      : null,
     async () => {
       try {
+        // 防御性检查：确保token有效
+        if (!token || typeof token !== 'string' || token.length === 0) {
+          throw new Error('用户未登录或登录已过期，请重新登录');
+        }
+
         // 调用真实的积分系统API
         // Bug修复: 使用统一的API配置模块
         // 使用 getApiUrl() 确保在所有环境下都指向正确的后端地址
@@ -186,7 +212,13 @@ export function useUserCredits() {
         });
 
         if (!response.ok) {
-          // 改进错误处理，显示真实错误信息
+          // 改进错误处理，针对401错误提供友好提示
+          if (response.status === 401) {
+            // 401错误通常意味着token无效或已过期
+            console.error('Token无效或已过期:', response.statusText);
+            throw new Error('登录已过期，请重新登录');
+          }
+
           const errorData = await response.json().catch(() => ({}));
           const errorMsg = errorData.error || `HTTP ${response.status}`;
           console.error('获取积分数据失败:', errorMsg);
@@ -227,11 +259,12 @@ export function useUserCredits() {
     {
       refreshInterval: 30000, // 30秒刷新
       revalidateOnFocus: false,
-      // 错误重试策略
-      errorRetryCount: 3,
-      errorRetryInterval: 5000,
+      // 禁用自动重试，避免401错误循环请求
+      // 401错误通常意味着认证问题，重试无意义
+      errorRetryCount: 0,
       onError: (err) => {
         console.error('用户积分数据加载失败:', err);
+        // 可以在这里添加错误上报逻辑
       }
     }
   );
