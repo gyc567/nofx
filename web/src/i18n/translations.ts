@@ -960,19 +960,33 @@ export const translations = {
 };
 
 export function t(key: string, lang: Language, params?: Record<string, string | number>): string {
-  // Parse nested key paths (e.g., "profile.userInfo" -> ["profile", "userInfo"])
-  const keys = key.split('.');
+  const langTranslations = translations[lang];
+  
+  // Strategy 1: Try direct flat key lookup first (e.g., 'web3.connectWallet')
+  // This handles keys like 'web3.connectWallet' that are stored as flat strings
+  if (key in langTranslations) {
+    const directValue = langTranslations[key as keyof typeof langTranslations];
+    if (typeof directValue === 'string') {
+      let text = directValue;
+      if (params) {
+        Object.entries(params).forEach(([param, val]) => {
+          text = text.replace(new RegExp(`{${param}}`, 'g'), String(val));
+        });
+      }
+      return text;
+    }
+  }
 
-  // Navigate through nested object structure
-  let value: any = translations[lang];
+  // Strategy 2: Try nested key path lookup (e.g., "profile.userInfo" -> profile.userInfo)
+  const keys = key.split('.');
+  let value: any = langTranslations;
   for (const k of keys) {
     if (value && typeof value === 'object' && value !== null && k in value) {
       value = value[k as keyof typeof value];
     } else {
-      // Key not found - return a readable fallback
+      // Key not found in nested structure either - return a readable fallback
       console.warn(`⚠️  Translation key not found: ${key} in ${lang}`);
       const lastPart = keys[keys.length - 1];
-      // Convert camelCase to readable text
       const readable = lastPart
         .replace(/([A-Z])/g, ' $1')
         .replace(/_/g, ' ')
