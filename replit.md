@@ -4,6 +4,8 @@
 Monnaire Trading Agent OS is an AI-powered cryptocurrency trading system with support for multiple AI models (DeepSeek, Qwen) and exchanges (OKX, Hyperliquid, Aster DEX). This is a full-stack application with a Go backend and React/Vite frontend.
 
 ## Recent Changes (December 4, 2025)
+- ✅ **Fixed Web3 wallet button translation display** - Root cause: t() function only supported nested key paths, not flat keys like 'web3.connectWallet'
+- ✅ **Updated t() function in i18n/translations.ts** - Now tries direct flat key lookup first, then falls back to nested path lookup
 - ✅ **Fixed credits API 401 authentication error** - Root cause: context key mismatch between authMiddleware ("user_id") and getUserID() ("userID")
 - ✅ **Updated getUserID() in api/credits/handler.go** - Now checks for correct "user_id" key first, with fallback to "userID"
 - ✅ **Fixed trader/auto_trader_enhanced.go compilation errors** - Removed unused import, fixed method calls, corrected parameter types
