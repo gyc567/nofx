@@ -101,16 +101,16 @@ func TestService_ProcessCategory_Deduplication(t *testing.T) {
         }
 }
 
-func TestService_ProcessCategory_KeywordFilter(t *testing.T) {
+func TestService_ProcessCategory_PassThrough(t *testing.T) {
         // Setup
         mockStore := &MockStateStore{
                 Configs: map[string]string{"telegram_news_enabled": "true"},
         }
         mockFetcher := &MockFetcher{
                 News: []Article{
-                        {ID: 1, Datetime: 2000, Headline: "Random Stuff", Summary: "Nothing important"}, // Skip (No keyword)
-                        {ID: 2, Datetime: 2001, Headline: "Bitcoin Update", Summary: "Moon!"},           // Send (Keyword: Bitcoin)
-                        {ID: 3, Datetime: 2002, Headline: "Fed Decision", Summary: "Rates up"},          // Send (Keyword: Fed)
+                        {ID: 1, Datetime: 2000, Headline: "Random Stuff", Summary: "Nothing important"}, // Should be sent (Fetcher handles filtering)
+                        {ID: 2, Datetime: 2001, Headline: "Bitcoin Update", Summary: "Moon!"},           // Should be sent
+                        {ID: 3, Datetime: 2002, Headline: "Fed Decision", Summary: "Rates up"},          // Should be sent
                 },
         }
         mockNotifier := &MockNotifier{}
@@ -121,15 +121,18 @@ func TestService_ProcessCategory_KeywordFilter(t *testing.T) {
         service.enabled = true
 
         // Execute
-        err := service.ProcessCategory("general") // Keywords apply here
+        err := service.ProcessCategory("general")
 
         // Verify
         if err != nil {
                 t.Fatalf("ProcessCategory failed: %v", err)
         }
 
-        if len(mockNotifier.SentMessages) != 2 {
-                t.Errorf("Expected 2 messages sent, got %d", len(mockNotifier.SentMessages))
+        // Service layer should no longer filter based on keywords. 
+        // It relies on Fetcher to return only relevant news.
+        // Since MockFetcher returns 3 items, Service should process all 3.
+        if len(mockNotifier.SentMessages) != 3 {
+                t.Errorf("Expected 3 messages sent, got %d", len(mockNotifier.SentMessages))
         }
 }
 

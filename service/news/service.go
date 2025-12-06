@@ -134,28 +134,10 @@ func (s *Service) ProcessCategory(category string) error {
         // 3. 过滤和排序
         var newArticles []Article
         
-        // 关键词白名单（仅针对 general 分类）
-        keywords := []string{"Fed", "FOMC", "CPI", "Inflation", "Interest Rate", "SEC", "Bitcoin", "Ethereum", "Crypto", "Regulation", "Binance", "Coinbase", "GDP", "Recession"}
-
         for _, a := range articles {
                 // 基础去重
                 if int64(a.ID) <= lastID || a.Datetime <= lastTime {
                         continue
-                }
-
-                // General 分类关键词过滤
-                if category == "general" {
-                        hit := false
-                        headline := a.Headline + " " + a.Summary
-                        for _, kw := range keywords {
-                                if strings.Contains(strings.ToLower(headline), strings.ToLower(kw)) {
-                                        hit = true
-                                        break
-                                }
-                        }
-                        if !hit {
-                                continue
-                        }
                 }
 
                 newArticles = append(newArticles, a)

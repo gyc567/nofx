@@ -48,28 +48,25 @@ type AIOutput struct {
 }
 
 func (p *DeepSeekProcessor) Process(article *Article) error {
-        // 构造 Prompt
-        prompt := fmt.Sprintf(`You are a professional crypto market analyst.
-Task: Translate the news into %s and summarize it.
-Input Headline: %s
-Input Summary: %s
+        // 构造 System Prompt (静态部分，Token 消耗固定且高效)
+        systemPrompt := fmt.Sprintf(
+                `Role: Financial Analyst. Task: Translate news to %s, summarize (<30 words), analyze sentiment. Output JSON: {"title":"...","summary":"...","sentiment":"POSITIVE/NEGATIVE/NEUTRAL"}`,
+                p.targetLang,
+        )
 
-Output strictly in JSON format:
-{
-  "title": "Translated Headline",
-  "summary": "One sentence summary",
-  "sentiment": "POSITIVE/NEGATIVE/NEUTRAL"
-}`, p.targetLang, article.Headline, article.Summary)
+        // 构造 User Prompt (仅包含动态数据)
+        userPrompt := fmt.Sprintf("Headline: %s\nSummary: %s", article.Headline, article.Summary)
 
         // 构造请求体
         reqBody := map[string]interface{}{
                 "model": "deepseek-chat",
                 "messages": []map[string]string{
-                        {"role": "system", "content": "You are a helpful assistant that outputs only JSON."},
-                        {"role": "user", "content": prompt},
+                        {"role": "system", "content": systemPrompt},
+                        {"role": "user", "content": userPrompt},
                 },
                 "response_format": map[string]string{"type": "json_object"}, // 强制 JSON 输出
-                "temperature": 0.3,
+                "temperature":     0.3,
+                "max_tokens":      200, // 限制最大输出 Token，防止模型发疯
         }
 
         jsonBody, err := json.Marshal(reqBody)
