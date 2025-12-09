@@ -4,6 +4,8 @@ import (
 	"errors"
 	"time"
 
+	"nofx/auth"
+
 	"github.com/golang-jwt/jwt/v5"
 )
 
@@ -37,7 +39,7 @@ func GenerateWeb3JWT(userID, walletAddr string, walletList []string, isRefresh b
 		expiryTime = time.Now().Add(RefreshTokenExpiryHours * time.Hour)
 		tokenType = "refresh"
 	} else {
-		expiryTime = time.Now().add(JWTExpiryHours * time.Hour)
+		expiryTime = time.Now().Add(JWTExpiryHours * time.Hour)
 		tokenType = "access"
 	}
 
@@ -56,7 +58,7 @@ func GenerateWeb3JWT(userID, walletAddr string, walletList []string, isRefresh b
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	return token.SignedString([]byte(JWTSecret))
+	return token.SignedString(auth.JWTSecret)
 }
 
 // 验证JWT令牌（安全配置）
@@ -77,7 +79,7 @@ func ValidateWeb3JWT(tokenString string) (*Claims, error) {
 			return nil, errors.New("不允许的算法: " + token.Header["alg"].(string))
 		}
 
-		return []byte(JWTSecret), nil
+		return auth.JWTSecret, nil
 	})
 
 	if err != nil {

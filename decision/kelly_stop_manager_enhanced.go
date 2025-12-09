@@ -101,9 +101,14 @@ func NewKellyStopManagerEnhanced(dataFilePath string) *KellyStopManagerEnhanced 
 
 // SaveStatsToFile 保存统计数据到文件
 func (ksm *KellyStopManagerEnhanced) SaveStatsToFile(filename string) error {
-	ksm.statsMutex.RLock()
-	defer ksm.statsMutex.RUnlock()
+	ksm.statsMutex.Lock()
+	defer ksm.statsMutex.Unlock()
 
+	return ksm.saveStatsToFileInternal(filename)
+}
+
+// saveStatsToFileInternal 内部保存方法（不带锁）
+func (ksm *KellyStopManagerEnhanced) saveStatsToFileInternal(filename string) error {
 	data, err := json.MarshalIndent(ksm.historicalStats, "", "  ")
 	if err != nil {
 		return fmt.Errorf("序列化统计数据失败: %w", err)
@@ -141,9 +146,10 @@ func (ksm *KellyStopManagerEnhanced) LoadStatsFromFile(filename string) error {
 }
 
 // AutoSave 自动保存（如果到了保存间隔）
+// 注意：必须在持有锁的情况下调用
 func (ksm *KellyStopManagerEnhanced) AutoSave() error {
 	if time.Since(ksm.lastSaveTime) >= ksm.saveInterval {
-		return ksm.SaveStatsToFile(ksm.dataFilePath)
+		return ksm.saveStatsToFileInternal(ksm.dataFilePath)
 	}
 	return nil
 }

@@ -191,8 +191,10 @@ func main() {
         // 设置JWT密钥
         jwtSecret, _ := database.GetSystemConfig("jwt_secret")
         if jwtSecret == "" {
-                jwtSecret = "your-jwt-secret-key-change-in-production-make-it-long-and-random"
-                log.Printf("⚠️  使用默认JWT密钥，建议在生产环境中配置")
+                jwtSecret = os.Getenv("JWT_SECRET")
+        }
+        if jwtSecret == "" {
+                log.Fatal("❌ JWT_SECRET is not set. Please set it in system config or environment variable.")
         }
         auth.SetJWTSecret(jwtSecret)
 

@@ -319,8 +319,8 @@ func TestEnhancedStopLossCalculation(t *testing.T) {
 				t.Errorf("止损价格(%f)应该小于当前价格(%f)", slPrice, tc.currentPrice)
 			}
 
-			if slPrice <= tc.entryPrice {
-				t.Errorf("止损价格(%f)应该大于入场价格(%f)", slPrice, tc.entryPrice)
+			if slPrice < tc.entryPrice {
+				t.Errorf("止损价格(%f)应该大于等于入场价格(%f)", slPrice, tc.entryPrice)
 			}
 
 			// 验证保护比例

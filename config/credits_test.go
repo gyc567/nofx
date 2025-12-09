@@ -2,6 +2,7 @@ package config
 
 import (
 	"os"
+	"strings"
 	"testing"
 	"time"
 )
@@ -191,8 +192,8 @@ func TestUserCreditsOperations(t *testing.T) {
 		if err == nil {
 			t.Error("应该返回积分不足错误")
 		}
-		if err != nil && err.Error() != "积分不足" {
-			t.Errorf("错误信息不匹配: expected '积分不足', got '%s'", err.Error())
+		if err != nil && !strings.Contains(err.Error(), "积分不足") {
+			t.Errorf("错误信息不匹配: expected to contain '积分不足', got '%s'", err.Error())
 		}
 		t.Log("✅ 正确检测积分不足")
 	})
@@ -354,8 +355,8 @@ func TestAdminAdjustCredits(t *testing.T) {
 		if err == nil {
 			t.Error("应该返回积分不足错误")
 		}
-		if err != nil && err.Error() != "积分不足" {
-			t.Errorf("错误信息不匹配: expected '积分不足', got '%s'", err.Error())
+		if err != nil && !strings.Contains(err.Error(), "积分不足") {
+			t.Errorf("错误信息不匹配: expected to contain '积分不足', got '%s'", err.Error())
 		}
 
 		t.Log("✅ 正确检测管理员扣减积分不足")

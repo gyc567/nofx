@@ -5,19 +5,20 @@ import (
 	"fmt"
 	"log"
 	"nofx/config"
+	"nofx/service/credits"
 	"time"
 )
 
 // CompensationService 补偿服务
 type CompensationService struct {
 	db            *config.Database
-	creditsService *CreditsService
+	creditsService *credits.CreditsService
 	retryInterval time.Duration
 	stopChan      chan bool
 }
 
 // NewCompensationService 创建补偿服务
-func NewCompensationService(db *config.Database, creditsService *CreditsService) *CompensationService {
+func NewCompensationService(db *config.Database, creditsService *credits.CreditsService) *CompensationService {
 	return &CompensationService{
 		db:            db,
 		creditsService: creditsService,

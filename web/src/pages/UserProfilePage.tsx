@@ -170,7 +170,7 @@ const UserProfilePage: React.FC = () => {
                     {userProfile?.position_count || 0}
                   </div>
                   <div className="text-sm text-[var(--text-secondary)]">
-                    {t('totalPositions', language)}
+                    {t('profile.totalPositions', language)}
                   </div>
                 </div>
               </div>

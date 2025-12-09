@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"log"
 
+	_ "github.com/jackc/pgx/v5/stdlib"
 	_ "github.com/mattn/go-sqlite3"
-	_ "github.com/lib/pq"
 )
 
 // MigrateData 从SQLite迁移数据到Neon PostgreSQL
@@ -21,7 +21,7 @@ func MigrateData(sqlitePath, neonDSN string) error {
 	defer sqliteDB.Close()
 
 	// 连接Neon PostgreSQL
-	pgDB, err := sql.Open("postgres", neonDSN)
+	pgDB, err := sql.Open("pgx", neonDSN)
 	if err != nil {
 		return fmt.Errorf("连接Neon失败: %w", err)
 	}
@@ -40,14 +40,14 @@ func MigrateData(sqlitePath, neonDSN string) error {
 		)`,
 
 		// 交易所配置表
-		`CREATE TABLE IF NOT EXISTS exchange_configs (
+		`CREATE TABLE IF NOT EXISTS exchanges (
 			id SERIAL PRIMARY KEY,
 			user_id INT NOT NULL,
-			exchange_type VARCHAR(32) NOT NULL,
+			type VARCHAR(32) NOT NULL,
 			api_key VARCHAR(512) NOT NULL,
 			secret_key VARCHAR(512) NOT NULL,
 			passphrase VARCHAR(256),
-			use_testnet BOOLEAN DEFAULT false,
+			testnet BOOLEAN DEFAULT false,
 			enabled BOOLEAN DEFAULT true,
 			created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 			updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -55,10 +55,10 @@ func MigrateData(sqlitePath, neonDSN string) error {
 		)`,
 
 		// AI模型配置表
-		`CREATE TABLE IF NOT EXISTS ai_model_configs (
+		`CREATE TABLE IF NOT EXISTS ai_models (
 			id SERIAL PRIMARY KEY,
 			user_id INT NOT NULL,
-			model_type VARCHAR(32) NOT NULL,
+			provider VARCHAR(32) NOT NULL,
 			api_key VARCHAR(512) NOT NULL,
 			custom_api_url VARCHAR(256),
 			custom_model_name VARCHAR(128),
@@ -82,12 +82,12 @@ func MigrateData(sqlitePath, neonDSN string) error {
 	}
 
 	// 迁移交易所配置
-	if err := migrateExchangeConfigs(sqliteDB, pgDB); err != nil {
+	if err := migrateExchanges(sqliteDB, pgDB); err != nil {
 		return fmt.Errorf("迁移交易所配置失败: %w", err)
 	}
 
 	// 迁移AI模型配置
-	if err := migrateAIModelConfigs(sqliteDB, pgDB); err != nil {
+	if err := migrateAIModels(sqliteDB, pgDB); err != nil {
 		return fmt.Errorf("迁移AI模型配置失败: %w", err)
 	}
 
@@ -147,8 +147,8 @@ func migrateUsers(sqliteDB, pgDB *sql.DB) error {
 }
 
 // 迁移交易所配置
-func migrateExchangeConfigs(sqliteDB, pgDB *sql.DB) error {
-	rows, err := sqliteDB.Query("SELECT id, user_id, exchange_type, api_key, secret_key, passphrase, use_testnet, enabled FROM exchange_configs")
+func migrateExchanges(sqliteDB, pgDB *sql.DB) error {
+	rows, err := sqliteDB.Query("SELECT id, user_id, type, api_key, secret_key, passphrase, testnet, enabled FROM exchanges")
 	if err != nil {
 		return err
 	}
@@ -168,7 +168,7 @@ func migrateExchangeConfigs(sqliteDB, pgDB *sql.DB) error {
 			return err
 		}
 
-		_, err := pgDB.Exec("INSERT INTO exchange_configs (id, user_id, exchange_type, api_key, secret_key, passphrase, use_testnet, enabled) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) ON CONFLICT (id) DO NOTHING",
+		_, err := pgDB.Exec("INSERT INTO exchanges (id, user_id, type, api_key, secret_key, passphrase, testnet, enabled) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) ON CONFLICT (id) DO NOTHING",
 			id, userID, exchangeType, apiKey, secretKey, passphrase.String, useTestnet, enabled)
 		if err != nil {
 			return err
@@ -179,8 +179,8 @@ func migrateExchangeConfigs(sqliteDB, pgDB *sql.DB) error {
 }
 
 // 迁移AI模型配置
-func migrateAIModelConfigs(sqliteDB, pgDB *sql.DB) error {
-	rows, err := sqliteDB.Query("SELECT id, user_id, model_type, api_key, custom_api_url, custom_model_name, enabled FROM ai_model_configs")
+func migrateAIModels(sqliteDB, pgDB *sql.DB) error {
+	rows, err := sqliteDB.Query("SELECT id, user_id, provider, api_key, custom_api_url, custom_model_name, enabled FROM ai_models")
 	if err != nil {
 		return err
 	}
@@ -199,7 +199,7 @@ func migrateAIModelConfigs(sqliteDB, pgDB *sql.DB) error {
 			return err
 		}
 
-		_, err := pgDB.Exec("INSERT INTO ai_model_configs (id, user_id, model_type, api_key, custom_api_url, custom_model_name, enabled) VALUES ($1, $2, $3, $4, $5, $6, $7) ON CONFLICT (id) DO NOTHING",
+		_, err := pgDB.Exec("INSERT INTO ai_models (id, user_id, provider, api_key, custom_api_url, custom_model_name, enabled) VALUES ($1, $2, $3, $4, $5, $6, $7) ON CONFLICT (id) DO NOTHING",
 			id, userID, modelType, apiKey, customAPIURL.String, customModelName.String, enabled)
 		if err != nil {
 			return err

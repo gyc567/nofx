@@ -33,6 +33,19 @@ try {
     console.log('✅ PASS: Profile page has no uninternationalized Chinese text');
   }
 
+  // 确保使用了正确的持仓数翻译键
+  const profilePageContent = fs.readFileSync(profilePagePath, 'utf8');
+  const usesTopLevelTotalPositions =
+    profilePageContent.includes("t('totalPositions'") ||
+    profilePageContent.includes('t("totalPositions"');
+
+  if (usesTopLevelTotalPositions) {
+    console.log('❌ ERROR: Profile page still calls t(\"totalPositions\") instead of profile.totalPositions');
+    process.exit(1);
+  } else {
+    console.log('✅ PASS: Profile page uses profile.totalPositions for translation');
+  }
+
   // 检查我们添加的国际化键是否存在
   const addedKeys = [
     'totalCredits',

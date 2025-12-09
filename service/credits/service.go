@@ -8,6 +8,7 @@ import (
 	"log"
 	"nofx/config"
 	"time"
+	"unicode/utf8"
 )
 
 // Service 积分服务接口
@@ -220,7 +221,8 @@ func (s *CreditService) AdjustUserCredits(ctx context.Context, adminID, userID s
 	if amount == 0 {
 		return fmt.Errorf("调整积分数量不能为0")
 	}
-	if len(reason) < 2 || len(reason) > 200 {
+	reasonLen := utf8.RuneCountInString(reason)
+	if reasonLen < 2 || reasonLen > 200 {
 		return fmt.Errorf("调整原因长度必须在2-200字符之间")
 	}
 

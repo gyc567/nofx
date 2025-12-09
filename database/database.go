@@ -7,7 +7,7 @@ import (
 	"strings"
 
 	_ "github.com/mattn/go-sqlite3"
-	_ "github.com/lib/pq"
+	_ "github.com/jackc/pgx/v5/stdlib"
 )
 
 // DBConfig 数据库配置
@@ -48,7 +48,7 @@ func NewDatabase(config DBConfig) (*DatabaseImpl, error) {
 	
 	// 尝试连接Neon
 	if config.UseNeon {
-		neonDB, err := sql.Open("postgres", config.NeonDSN)
+		neonDB, err := sql.Open("pgx", config.NeonDSN)
 		if err != nil {
 			log.Printf("⚠️  连接Neon失败: %v", err)
 		} else {

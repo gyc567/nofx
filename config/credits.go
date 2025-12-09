@@ -387,11 +387,10 @@ func (d *Database) AdjustUserCredits(adminID, userID string, amount int, reason,
                 }
                 defer tx.Rollback()
 
-                // 获取或创建用户积分账户
-                var userCreditsID int
-                var availableCredits, totalCredits, usedCredits int
-                var createdAt, updatedAt time.Time
-
+                		// 获取或创建用户积分账户
+                		var userCreditsID string
+                		var availableCredits, totalCredits, usedCredits int
+                		var createdAt, updatedAt time.Time
                 err = tx.QueryRow(`
                         SELECT id, available_credits, total_credits, used_credits, created_at, updated_at
                         FROM user_credits

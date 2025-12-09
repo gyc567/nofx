@@ -308,3 +308,74 @@ func (r *PostgreSQLRepository) GetBoundUser(walletAddr string) (*UserWallet, err
 	}
 	return &uw, err
 }
+
+// ListWalletsByUser 获取用户的钱包列表（详细信息）
+func (r *PostgreSQLRepository) ListWalletsByUser(userID string) ([]Wallet, error) {
+	query := `
+		SELECT w.id, w.wallet_addr, w.chain_id, w.wallet_type, w.label, w.is_active, w.created_at, w.updated_at
+		FROM web3_wallets w
+		JOIN user_wallets uw ON w.wallet_addr = uw.wallet_addr
+		WHERE uw.user_id = $1 AND w.is_active = true
+	`
+
+	rows, err := r.db.Query(query, userID)
+	if err != nil {
+		return nil, fmt.Errorf("查询用户钱包详细列表失败: %w", err)
+	}
+	defer rows.Close()
+
+	var wallets []Wallet
+	for rows.Next() {
+		var w Wallet
+		if err := rows.Scan(
+			&w.ID, &w.WalletAddr, &w.ChainID, &w.WalletType,
+			&w.Label, &w.IsActive, &w.CreatedAt, &w.UpdatedAt,
+		); err != nil {
+			return nil, fmt.Errorf("扫描钱包记录失败: %w", err)
+		}
+		wallets = append(wallets, w)
+	}
+	return wallets, nil
+}
+
+// UpdateWalletLabel 更新钱包标签
+func (r *PostgreSQLRepository) UpdateWalletLabel(addr, label string) error {
+	query := `UPDATE web3_wallets SET label = $2, updated_at = NOW() WHERE wallet_addr = $1`
+	_, err := r.db.Exec(query, addr, label)
+	return err
+}
+
+// DeleteWallet 删除钱包
+func (r *PostgreSQLRepository) DeleteWallet(addr string) error {
+	query := `DELETE FROM web3_wallets WHERE wallet_addr = $1`
+	_, err := r.db.Exec(query, addr)
+	return err
+}
+
+// GetUserWallet 获取指定用户钱包关联
+func (r *PostgreSQLRepository) GetUserWallet(userID, walletAddr string) (*UserWallet, error) {
+	query := `
+		SELECT id, user_id, wallet_addr, is_primary, bound_at, last_used_at
+		FROM user_wallets
+		WHERE user_id = $1 AND wallet_addr = $2
+	`
+	var uw UserWallet
+	err := r.db.QueryRow(query, userID, walletAddr).Scan(
+		&uw.ID, &uw.UserID, &uw.WalletAddr,
+		&uw.IsPrimary, &uw.BoundAt, &uw.LastUsedAt,
+	)
+	if err == sql.ErrNoRows {
+		return nil, nil
+	}
+	if err != nil {
+		return nil, err
+	}
+	return &uw, nil
+}
+
+// IsWalletBound 检查钱包是否已被绑定
+func (r *PostgreSQLRepository) IsWalletBound(walletAddr string) bool {
+	var exists bool
+	err := r.db.QueryRow(`SELECT EXISTS(SELECT 1 FROM user_wallets WHERE wallet_addr = $1)`, walletAddr).Scan(&exists)
+	return err == nil && exists
+}
