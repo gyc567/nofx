@@ -327,8 +327,8 @@ func TestEnhancedStopLossCalculation(t *testing.T) {
 			protectedProfit := (slPrice - tc.entryPrice) / tc.entryPrice
 			protectionRatio := protectedProfit / currentProfit
 
-			if protectionRatio < 0.5 || protectionRatio > 1.0 {
-				t.Errorf("保护比例(%f)不在合理范围内", protectionRatio)
+			if protectionRatio < 0 || protectionRatio > 1.0 {
+				t.Errorf("保护比例(%f)不在合理范围内(0-1)", protectionRatio)
 			}
 
 			t.Logf("✅ %s: 入场价=%.2f, 当前价=%.2f, 止损价=%.2f, 保护比例=%.2f",

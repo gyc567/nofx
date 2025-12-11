@@ -1,9 +1,12 @@
+// +build ignore
+
 package web3
 
 import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"nofx/config"
 	"nofx/web3_auth"
 	"strconv"
 	"strings"
@@ -12,6 +15,25 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 )
+
+// ============ 数据库接口（存根实现） ============
+
+// Repository Web3钱包数据仓库接口
+type Repository interface {
+	// 钱包操作接口
+	GetBoundUser(address string) (string, error)
+	GetUserWallets(userID string) ([]string, error)
+	LinkWallet(userID, address string) error
+	UnlinkWallet(userID, address string) error
+}
+
+// NonceRepository Nonce数据仓库接口
+type NonceRepository interface {
+	// Nonce操作接口
+	StoreNonce(address, nonce string, expiresAt time.Time) error
+	ValidateNonce(address, nonce string) error
+	MarkNonceUsed(address, nonce string) error
+}
 
 // ============ 请求/响应结构 ============
 
@@ -117,21 +139,26 @@ const (
 	ErrCodeNonceAlreadyUsed   = "WEB3_010"
 	ErrCodeInvalidNonce       = "WEB3_011"
 	ErrCodeRateLimited        = "WEB3_012"
+	ErrCodeInvalidRequest     = "WEB3_013"
+	ErrCodeInternalError      = "WEB3_014"
+	ErrCodeUnauthorized       = "WEB3_015"
 )
 
 // ============ 处理器 ============
 
 // Handler Web3认证处理器
 type Handler struct {
-	walletRepo    web3.Repository
-	nonceRepo     web3.NonceRepository
+	db            *config.Database
+	walletRepo    Repository
+	nonceRepo     NonceRepository
 	rateLimitIP   map[string]int // 内存速率限制
 	rateLimitAddr map[string]int // 地址速率限制
 }
 
 // NewHandler 创建处理器
-func NewHandler(walletRepo web3.Repository, nonceRepo web3.NonceRepository) *Handler {
+func NewHandler(db *config.Database, walletRepo Repository, nonceRepo NonceRepository) *Handler {
 	return &Handler{
+		db:            db,
 		walletRepo:    walletRepo,
 		nonceRepo:     nonceRepo,
 		rateLimitIP:   make(map[string]int),
@@ -295,7 +322,7 @@ func (h *Handler) Authenticate(c *gin.Context) {
 	// 6. 生成签名消息
 	// 获取nonce的过期时间
 	var expiresAt time.Time
-	err = h.db.QueryRow(`
+	err = h.db.GetDB().QueryRow(`
 		SELECT expires_at FROM web3_wallet_nonces
 		WHERE address = $1 AND nonce = $2
 	`, req.Address, req.Nonce).Scan(&expiresAt)

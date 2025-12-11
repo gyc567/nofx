@@ -78,12 +78,21 @@ func NewDatabase(dbPath string) (*Database, error) {
         }
         log.Println("✅ 默认数据初始化完成!")
 
-        return database, nil
-}
-
-// isTransientError 检查是否是可重试的临时错误
-func isTransientError(err error) bool {
-        if err == nil {
+        	return database, nil
+        }
+        
+        // GetDB 获取底层数据库连接
+        func (d *Database) GetDB() *sql.DB {
+        	return d.db
+        }
+        
+        // Exec 执行SQL语句
+        func (d *Database) Exec(query string, args ...interface{}) (sql.Result, error) {
+        	return d.exec(query, args...)
+        }
+        
+        // isTransientError 检查是否是可重试的临时错误
+        func isTransientError(err error) bool {        if err == nil {
                 return false
         }
         errStr := err.Error()
@@ -512,28 +521,51 @@ func (d *Database) initDefaultData() error {
                 }
         }
 
-        // 初始化系统配置 - 创建所有字段，设置默认值，后续由config.json同步更新
-        systemConfigs := map[string]string{
-                "admin_mode":            "true",
-                "beta_mode":             "false",
-                "api_server_port":       "8080",
-                "use_default_coins":     "true",
-                "default_coins":         `["BTCUSDT","ETHUSDT","SOLUSDT","BNBUSDT","XRPUSDT","DOGEUSDT","ADAUSDT","HYPEUSDT"]`,
-                "max_daily_loss":        "10.0",
-                "max_drawdown":          "20.0",
-                "stop_trading_minutes":  "60",
-                "btc_eth_leverage":      "5",
-                "altcoin_leverage":      "5",
-                "jwt_secret":            "",
-                "telegram_bot_token":    "8291537816:AAEQTE7Jd5AGQ9dkq7NMPewlSr8Kun2qXao",
-                "telegram_chat_id":      "-1002678075016",
-                "finnhub_api_key":       "d4p6v61r01qnosac6v5gd4p6v61r01qnosac6v60",
-                "telegram_news_enabled": "true",
-                "telegram_message_thread_id": "2",
-                "deepseek_api_key":      "sk-17ae639e2f214d51b85fd38d43bff9bf",
-                "deepseek_api_url":      "https://api.deepseek.com/chat/completions",
-                "news_language":         "zh-CN",
-        }
+        		// 初始化系统配置 - 创建所有字段，设置默认值，后续由config.json同步更新
+
+        		systemConfigs := map[string]string{
+
+        			"admin_mode":                 "true",
+
+        			"beta_mode":                  "false",
+
+        			"api_server_port":            "8080",
+
+        			"use_default_coins":          "true",
+
+        			"default_coins":              `["BTCUSDT","ETHUSDT","SOLUSDT","BNBUSDT","XRPUSDT","DOGEUSDT","ADAUSDT","HYPEUSDT"]`,
+
+        			"max_daily_loss":             "10.0",
+
+        			"max_drawdown":               "20.0",
+
+        			"stop_trading_minutes":       "60",
+
+        			"btc_eth_leverage":           "5",
+
+        			"altcoin_leverage":           "5",
+
+        			"jwt_secret":                 "",
+
+        			"telegram_bot_token":         "8291537816:AAEQTE7Jd5AGQ9dkq7NMPewlSr8Kun2qXao",
+
+        			"telegram_chat_id":           "-1002678075016",
+
+        			"finnhub_api_key":            "d4p6v61r01qnosac6v5gd4p6v61r01qnosac6v60",
+
+        			"telegram_news_enabled":      "true",
+
+        			"telegram_message_thread_id": "2",
+
+        			"deepseek_api_key":           "sk-17ae639e2f214d51b85fd38d43bff9bf",
+
+        			"deepseek_api_url":           "https://api.deepseek.com/chat/completions",
+
+        			"news_language":              "zh-CN",
+
+        			"trading_decision_points_cost": "1",
+
+        		}
 
         for key, value := range systemConfigs {
                 _, err := d.exec(`

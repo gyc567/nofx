@@ -4,6 +4,7 @@ import (
 	"crypto/ecdsa"
 	"crypto/rand"
 	"encoding/hex"
+	"strings"
 	"testing"
 	"time"
 
@@ -37,7 +38,7 @@ func signMessage(privateKey *ecdsa.PrivateKey, message string) (string, error) {
 		return "", err
 	}
 
-	return hex.EncodeToString(signature), nil
+	return "0x" + hex.EncodeToString(signature), nil
 }
 
 // ============ 签名恢复测试 ============
@@ -85,7 +86,7 @@ func TestRecoverAddressFromSignature_InvalidSignature(t *testing.T) {
 	assert.Contains(t, err.Error(), "签名长度无效")
 
 	// 测试错误的签名
-	wrongSignature := "0x" + "ff" * 65
+	wrongSignature := "0x" + strings.Repeat("ff", 65)
 	_, err = RecoverAddressFromSignature(message, wrongSignature, address)
 	assert.Error(t, err)
 }
@@ -152,11 +153,11 @@ func TestValidateSignature(t *testing.T) {
 		signature string
 		wantErr   bool
 	}{
-		{"有效签名", "0x" + "ff" * 130, false},
-		{"有效签名(无前缀)", "ff" * 130, false}, // 自动添加前缀
+		{"有效签名", "0x" + strings.Repeat("ff", 65), false},
+		{"有效签名(无前缀)", strings.Repeat("ff", 65), false}, // 自动添加前缀
 		{"空签名", "", true},
-		{"太短", "0x" + "ff" * 10, true},
-		{"太长", "0x" + "ff" * 200, true},
+		{"太短", "0x" + strings.Repeat("ff", 5), true},
+		{"太长", "0x" + strings.Repeat("ff", 100), true},
 		{"无效字符", "0xgg", true},
 	}
 
@@ -290,7 +291,7 @@ func TestGenerateSignatureMessage(t *testing.T) {
 
 // TestHashSignature 生成签名哈希测试
 func TestHashSignature(t *testing.T) {
-	signature := "0x" + "ff" * 130
+	signature := "0x" + strings.Repeat("ff", 65)
 
 	hash := HashSignature(signature)
 

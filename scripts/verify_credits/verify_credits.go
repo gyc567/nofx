@@ -27,7 +27,7 @@ func main() {
 
 	userID := "68003b68-2f1d-4618-8124-e93e4a86200a"
 
-	fmt.Println("=== 用户积分验证查询 ===\n")
+	fmt.Println("=== 用户积分验证查询 ===")
 
 	// 1. 查询用户积分
 	fmt.Println("1. 用户积分信息:")

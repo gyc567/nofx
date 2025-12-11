@@ -220,15 +220,9 @@ func TestService_CrossCategoryDeduplication(t *testing.T) {
         }
 
         // 模拟fetcher：两个分类都返回相同的文章ID
-        fetcherCallCount := 0
         mockFetcher := &MockFetcher{
-                Err: nil,
-        }
-
-        originalFetch := mockFetcher.FetchNews
-        mockFetcher.FetchNews = func(category string) ([]Article, error) {
-                // 两个分类都返回ID=100的新闻
-                return []Article{sameArticle}, nil
+                News: []Article{sameArticle},
+                Err:  nil,
         }
 
         mockNotifier := &MockNotifier{}
@@ -260,6 +254,4 @@ func TestService_CrossCategoryDeduplication(t *testing.T) {
         } else {
                 t.Logf("✓ Cross-category deduplication works: only 1 message sent despite appearing in 2 categories")
         }
-
-        _ = originalFetch
 }

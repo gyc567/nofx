@@ -1,7 +1,6 @@
 package web3_auth
 
 import (
-	"crypto/ecdsa"
 	"crypto/rand"
 	"encoding/hex"
 	"errors"

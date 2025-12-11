@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"nofx/config"
+	"os"
 	"sync"
 	"sync/atomic"
 	"testing"
@@ -258,6 +259,10 @@ func TestCreditConsumerLoad100(t *testing.T) {
 		t.Skip("跳过负载测试")
 	}
 
+	if os.Getenv("DATABASE_URL") == "" {
+		t.Skip("跳过负载测试：未设置 DATABASE_URL 环境变量")
+	}
+
 	db, err := config.NewDatabase("")
 	if err != nil {
 		t.Fatalf("创建数据库失败: %v", err)
@@ -275,7 +280,7 @@ func TestCreditConsumerLoad100(t *testing.T) {
 	result := loadTest.RunLoadTest(ctx)
 
 	// 验证结果
-	if result.SuccessfulRequests < int64(loadTest.config.TotalRequests*0.9) { // 90%成功率
+	if float64(result.SuccessfulRequests) < float64(loadTest.config.TotalRequests)*0.9 { // 90%成功率
 		t.Errorf("成功率过低: %d/%d (%.2f%%)",
 			result.SuccessfulRequests, result.TotalRequests,
 			float64(result.SuccessfulRequests)/float64(result.TotalRequests)*100)
@@ -298,6 +303,10 @@ func TestCreditConsumerLoad500(t *testing.T) {
 		t.Skip("跳过负载测试")
 	}
 
+	if os.Getenv("DATABASE_URL") == "" {
+		t.Skip("跳过负载测试：未设置 DATABASE_URL 环境变量")
+	}
+
 	db, err := config.NewDatabase("")
 	if err != nil {
 		t.Fatalf("创建数据库失败: %v", err)
@@ -315,7 +324,7 @@ func TestCreditConsumerLoad500(t *testing.T) {
 	result := loadTest.RunLoadTest(ctx)
 
 	// 验证结果
-	if result.SuccessfulRequests < int64(loadTest.config.TotalRequests*0.85) { // 85%成功率
+	if float64(result.SuccessfulRequests) < float64(loadTest.config.TotalRequests)*0.85 { // 85%成功率
 		t.Errorf("成功率过低: %d/%d (%.2f%%)",
 			result.SuccessfulRequests, result.TotalRequests,
 			float64(result.SuccessfulRequests)/float64(result.TotalRequests)*100)
@@ -338,6 +347,10 @@ func TestCreditConsumerLoad1000(t *testing.T) {
 		t.Skip("跳过负载测试")
 	}
 
+	if os.Getenv("DATABASE_URL") == "" {
+		t.Skip("跳过负载测试：未设置 DATABASE_URL 环境变量")
+	}
+
 	db, err := config.NewDatabase("")
 	if err != nil {
 		t.Fatalf("创建数据库失败: %v", err)
@@ -355,7 +368,7 @@ func TestCreditConsumerLoad1000(t *testing.T) {
 	result := loadTest.RunLoadTest(ctx)
 
 	// 验证结果
-	if result.SuccessfulRequests < int64(loadTest.config.TotalRequests*0.8) { // 80%成功率
+	if float64(result.SuccessfulRequests) < float64(loadTest.config.TotalRequests)*0.8 { // 80%成功率
 		t.Errorf("成功率过低: %d/%d (%.2f%%)",
 			result.SuccessfulRequests, result.TotalRequests,
 			float64(result.SuccessfulRequests)/float64(result.TotalRequests)*100)

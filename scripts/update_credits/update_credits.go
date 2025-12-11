@@ -108,8 +108,8 @@ func main() {
 		return
 	}
 
-	description := fmt.Sprintf("管理员 %s %s 用户 %s 积分: %s (原因: %s)",
-		adminID, map[string]string{"credit": "增加", "debit": "扣减"}[txnType], userID, reason)
+	description := fmt.Sprintf("管理员 %s %s 用户 %s 积分: %d (原因: %s)",
+		adminID, map[string]string{"credit": "增加", "debit": "扣减"}[txnType], userID, adjustment, reason)
 
 	// 更新或创建积分账户
 	if isNewAccount {
