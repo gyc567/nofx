@@ -114,6 +114,14 @@ func GetFullDecisionWithCustomPrompt(ctx *Context, mcpClient *mcp.Client, custom
 	// 3. 调用AI API（使用 system + user prompt）
 	aiResponse, err := mcpClient.CallWithMessages(systemPrompt, userPrompt)
 	if err != nil {
+		// 检查是否为余额不足错误
+		if strings.Contains(err.Error(), "Insufficient Balance") || strings.Contains(err.Error(), "余额不足") {
+			log.Printf("\n" + strings.Repeat("!", 70))
+			log.Printf("❌ 严重错误: AI API 余额不足！")
+			log.Printf("👉 请检查您的 AI 服务提供商 (%s) 账户余额", mcpClient.Provider)
+			log.Printf("👉 或者尝试切换到其他 AI 模型 (在配置中修改)")
+			log.Printf(strings.Repeat("!", 70) + "\n")
+		}
 		return nil, fmt.Errorf("调用AI API失败: %w", err)
 	}
 

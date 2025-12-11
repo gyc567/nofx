@@ -246,6 +246,14 @@ func (client *Client) callOnce(systemPrompt, userPrompt string) (string, error) 
 	}
 
 	if resp.StatusCode != http.StatusOK {
+		// 特殊处理 402 余额不足错误
+		if resp.StatusCode == 402 {
+			return "", fmt.Errorf("AI API余额不足 (Insufficient Balance), 请检查充值: %s", string(body))
+		}
+		// 特殊处理 401 认证失败
+		if resp.StatusCode == 401 {
+			return "", fmt.Errorf("AI API密钥无效 (Unauthorized), 请检查配置: %s", string(body))
+		}
 		return "", fmt.Errorf("API返回错误 (status %d): %s", resp.StatusCode, string(body))
 	}
 
