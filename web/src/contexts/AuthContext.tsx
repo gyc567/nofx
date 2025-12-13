@@ -29,12 +29,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [token, setToken] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  // 🔧 修复：标记用户数据是否已从后端刷新过，确保邀请码等新字段被加载
+  const [isDataRefreshed, setIsDataRefreshed] = useState(false);
 
   const logout = () => {
     setUser(null);
     setToken(null);
     localStorage.removeItem('auth_token');
     localStorage.removeItem('auth_user');
+    setIsDataRefreshed(false);
   };
 
   const fetchCurrentUser = async (currentToken: string) => {
@@ -49,19 +52,23 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       if (response.ok) {
         const data = await response.json();
         // Update user state and local storage with latest data
-        const userInfo: User = { 
-          id: data.id, 
-          email: data.email, 
-          invite_code: data.invite_code 
+        const userInfo: User = {
+          id: data.id,
+          email: data.email,
+          invite_code: data.invite_code
         };
         setUser(userInfo);
         localStorage.setItem('auth_user', JSON.stringify(userInfo));
+        // 🔧 修复：标记数据已刷新，确保 UI 可以显示最新的用户信息（包括 invite_code）
+        setIsDataRefreshed(true);
       } else if (response.status === 401) {
         // Token expired or invalid
         logout();
       }
     } catch (error) {
       console.error('Failed to refresh user profile:', error);
+      // 🔧 修复：即使刷新失败，也标记为已尝试刷新，避免无限重试
+      setIsDataRefreshed(true);
     }
   };
 
@@ -75,22 +82,39 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         // 验证JWT token的有效性
         if (isValidToken(savedToken)) {
           setToken(savedToken);
-          setUser(JSON.parse(savedUser));
-          // Refresh user profile from backend to get latest fields (e.g. invite_code)
+          const parsedUser = JSON.parse(savedUser);
+          setUser(parsedUser);
+          // 🔧 修复：立即刷新用户数据以获取最新的字段（如 invite_code）
+          // 这解决了旧客户端数据缺少 invite_code 的问题
+          // 关键：即使 LocalStorage 中的数据不完整，我们也会从后端获取最新数据
           fetchCurrentUser(savedToken);
         } else {
           console.warn('Stored token is invalid or expired');
           // 清除无效数据
           logout();
+          setIsLoading(false);
         }
       } catch (error) {
         console.error('Failed to parse saved user data:', error);
         // 清除无效数据
         logout();
+        setIsLoading(false);
       }
+    } else {
+      // 没有保存的认证信息，不需要刷新
+      setIsLoading(false);
+      setIsDataRefreshed(true);
     }
-    setIsLoading(false);
   }, []);
+
+  // 🔧 修复：监听数据刷新状态，确保 fetchCurrentUser 完成后才停止加载
+  useEffect(() => {
+    // 只有在有 token 且数据已刷新时，才停止加载
+    // 这确保了 UserProfilePage 等组件在显示邀请码前，能拿到最新的用户数据
+    if (token && isDataRefreshed) {
+      setIsLoading(false);
+    }
+  }, [token, isDataRefreshed]);
 
   // 辅助函数：验证JWT token格式和过期时间
   const isValidToken = (token: string): boolean => {
