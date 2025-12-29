@@ -326,21 +326,38 @@ export function AITradersPage({ onTraderSelect }: AITradersPageProps) {
     if (!confirm(t('confirmDeleteModel', language))) return;
 
     try {
-      const updatedModels = allModels?.map(m =>
-        m.id === modelId ? { ...m, apiKey: '', customApiUrl: '', customModelName: '', enabled: false } : m
-      ) || [];
+      // 找到要删除的模型
+      const modelToDelete = allModels?.find(m => m.id === modelId);
+      if (!modelToDelete) return;
 
+      // 从列表中移除该模型
+      const updatedModels = allModels?.filter(m => m.id !== modelId) || [];
+
+      // 构建请求：将被删除模型的配置清空并禁用
       const request = {
         models: Object.fromEntries(
-          updatedModels.map(model => [
-            model.provider, // 使用 provider 而不是 id
-            {
-              enabled: model.enabled,
-              api_key: model.apiKey || '',
-              custom_api_url: model.customApiUrl || '',
-              custom_model_name: model.customModelName || ''
-            }
-          ])
+          [
+            // 保留其他模型的配置
+            ...updatedModels.map(model => [
+              model.provider,
+              {
+                enabled: model.enabled,
+                api_key: model.apiKey || '',
+                custom_api_url: model.customApiUrl || '',
+                custom_model_name: model.customModelName || ''
+              }
+            ]),
+            // 将被删除的模型设为禁用并清空配置
+            [
+              modelToDelete.provider,
+              {
+                enabled: false,
+                api_key: '',
+                custom_api_url: '',
+                custom_model_name: ''
+              }
+            ]
+          ]
         )
       };
 
