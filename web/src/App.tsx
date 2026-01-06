@@ -11,6 +11,7 @@ import { LandingPage } from './pages/LandingPage';
 import { UserManualPage } from './components/UserManualPage';
 import HeaderBar from './components/landing/HeaderBar';
 import AILearning from './components/AILearning';
+import { Trash2 } from 'lucide-react';
 
 // 用户详情页面 - 使用React.lazy实现代码分割
 const UserProfilePage = React.lazy(() => import('./pages/UserProfilePage'));
@@ -178,6 +179,20 @@ function App() {
     }
   }, [account]);
 
+  // 当当前选中的trader在列表中消失时（如被删除），退回到列表页
+  useEffect(() => {
+    if (currentPage === 'trader' && selectedTraderId && traders) {
+      const exists = traders.some(t => t.trader_id === selectedTraderId);
+      if (!exists && traders.length > 0) {
+        console.log('Selected trader no longer exists, navigating back to traders list');
+        setCurrentPage('traders');
+        setRoute('/traders');
+        window.history.pushState({}, '', '/traders');
+        setSelectedTraderId(undefined);
+      }
+    }
+  }, [traders, selectedTraderId, currentPage]);
+
   const selectedTrader = traders?.find((t) => t.trader_id === selectedTraderId);
 
   // Handle routing
@@ -338,6 +353,14 @@ function App() {
               setRoute('/dashboard');
               setCurrentPage('trader');
             }}
+            onTraderDelete={(traderId) => {
+              if (selectedTraderId === traderId) {
+                setSelectedTraderId(undefined);
+                window.history.pushState({}, '', '/traders');
+                setRoute('/traders');
+                setCurrentPage('traders');
+              }
+            }}
           />
         ) : (
           <TraderDetailsPage
@@ -352,6 +375,20 @@ function App() {
             traders={traders}
             selectedTraderId={selectedTraderId}
             onTraderSelect={setSelectedTraderId}
+            onDelete={async (traderId) => {
+              if (confirm(t('confirmDeleteTrader', language))) {
+                try {
+                  await api.deleteTrader(traderId);
+                  setSelectedTraderId(undefined);
+                  window.history.pushState({}, '', '/traders');
+                  setRoute('/traders');
+                  setCurrentPage('traders');
+                } catch (error) {
+                  console.error('Failed to delete trader:', error);
+                  alert(t('deleteTraderFailed', language));
+                }
+              }
+            }}
           />
         )}
       </main>
@@ -379,11 +416,13 @@ function TraderDetailsPage({
   traders,
   selectedTraderId,
   onTraderSelect,
+  onDelete,
 }: {
   selectedTrader?: TraderInfo;
   traders?: TraderInfo[];
   selectedTraderId?: string;
   onTraderSelect: (traderId: string) => void;
+  onDelete?: (traderId: string) => void;
   status?: SystemStatus;
   account?: AccountInfo;
   positions?: Position[];
@@ -432,24 +471,35 @@ function TraderDetailsPage({
             {selectedTrader.trader_name}
           </h2>
           
-          {/* Trader Selector */}
-          {traders && traders.length > 0 && (
-            <div className="flex items-center gap-2">
-              <span className="text-sm" style={{ color: '#848E9C' }}>{t('switchTrader', language)}:</span>
-              <select
-                value={selectedTraderId}
-                onChange={(e) => onTraderSelect(e.target.value)}
-                className="rounded px-3 py-2 text-sm font-medium cursor-pointer transition-colors"
-                style={{ background: '#1E2329', border: '1px solid #2B3139', color: '#EAECEF' }}
-              >
-                {traders.map((trader) => (
-                  <option key={trader.trader_id} value={trader.trader_id}>
-                    {trader.trader_name}
-                  </option>
-                ))}
-              </select>
-            </div>
-          )}
+          {/* Actions */}
+          <div className="flex items-center gap-3">
+            {/* Trader Selector */}
+            {traders && traders.length > 0 && (
+              <div className="flex items-center gap-2">
+                <span className="text-sm" style={{ color: '#848E9C' }}>{t('switchTrader', language)}:</span>
+                <select
+                  value={selectedTraderId}
+                  onChange={(e) => onTraderSelect(e.target.value)}
+                  className="rounded px-3 py-2 text-sm font-medium cursor-pointer transition-colors"
+                  style={{ background: '#1E2329', border: '1px solid #2B3139', color: '#EAECEF' }}
+                >
+                  {traders.map((trader) => (
+                    <option key={trader.trader_id} value={trader.trader_id}>
+                      {trader.trader_name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
+
+            <button
+              onClick={() => onDelete?.(selectedTrader.trader_id)}
+              className="p-2 rounded hover:bg-red-500/20 text-red-500 transition-colors border border-red-500/30"
+              title={t('delete', language)}
+            >
+              <Trash2 className="w-5 h-5" />
+            </button>
+          </div>
         </div>
         <div className="flex items-center gap-4 text-sm" style={{ color: '#848E9C' }}>
           <span>AI Model: <span className="font-semibold" style={{ color: selectedTrader.ai_model.includes('qwen') ? '#c084fc' : '#60a5fa' }}>{getModelDisplayName(selectedTrader.ai_model.split('_').pop() || selectedTrader.ai_model)}</span></span>

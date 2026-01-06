@@ -33,9 +33,10 @@ function getShortName(fullName: string): string {
 
 interface AITradersPageProps {
   onTraderSelect?: (traderId: string) => void;
+  onTraderDelete?: (traderId: string) => void;
 }
 
-export function AITradersPage({ onTraderSelect }: AITradersPageProps) {
+export function AITradersPage({ onTraderSelect, onTraderDelete }: AITradersPageProps) {
   const { language } = useLanguage();
   const { user, token } = useAuth();
   const [showCreateModal, setShowCreateModal] = useState(false);
@@ -108,9 +109,9 @@ export function AITradersPage({ onTraderSelect }: AITradersPageProps) {
     loadConfigs();
   }, [user, token]);
 
-  // 显示所有用户的模型和交易所配置（用于调试）
-  const configuredModels = allModels || [];
-  const configuredExchanges = allExchanges || [];
+  // 只显示已启用且有 API Key 的配置
+  const configuredModels = (allModels || []).filter(m => m.enabled && m.apiKey);
+  const configuredExchanges = (allExchanges || []).filter(e => e.enabled && e.apiKey);
   
   // 只在创建交易员时使用已启用且配置完整的
   const enabledModels = filterEnabledModels(allModels || []);
@@ -210,6 +211,9 @@ export function AITradersPage({ onTraderSelect }: AITradersPageProps) {
     try {
       await api.deleteTrader(traderId);
       mutateTraders();
+      if (onTraderDelete) {
+        onTraderDelete(traderId);
+      }
     } catch (error) {
       console.error('Failed to delete trader:', error);
       alert(t('deleteTraderFailed', language));
