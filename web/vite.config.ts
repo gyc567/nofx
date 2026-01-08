@@ -4,10 +4,17 @@ import react from '@vitejs/plugin-react'
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react()],
+  build: {
+    sourcemap: false,
+  },
+  optimizeDeps: {
+    esbuildOptions: {
+      sourcemap: false,
+    },
+  },
   test: {
     environment: 'jsdom',
-    globals: true, // Make test utilities global for easier use
+    globals: true,
     setupFiles: ['./vitest.setup.ts'],
-    // Revert include to default (all tests)
   },
 })
